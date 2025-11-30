@@ -1,0 +1,67 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+*.lynx.bundle
+
+# iOS / Xcode
+ios/Novia/Pods/
+ios/Novia/Novia.xcworkspace/xcuserdata/
+ios/Novia/Novia.xcodeproj/xcuserdata/
+ios/Novia/Novia.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcuserstate
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# macOS
+.DS_Store
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.tsbuildinfo
+.eslintcache
+.cache/
+tmp/
+temp/
+
+# Landing page specific
+landing/node_modules/
+landing/dist/
+
+# Backend specific
+backend/__pycache__/
+backend/*.pyc
+backend/.venv/
+backend/venv/

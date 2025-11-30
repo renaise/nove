@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  background-color: #FFFFF0;
+  --color-background: linear-gradient(135deg, #F5E6D3 0%, #F0C8C8 100%);
+  /* Champagne to Rose */
+  /* Alternative warmer gradient */
+  /* --color-background: linear-gradient(to bottom right, #FFF5F5, #FFF0F5, #F5F5F5); */
+  --color-foreground: #2D2D2D;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #2D2D2D;
+  --color-primary: #D4AF37;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #F8E8E8;
+  --color-secondary-foreground: #2D2D2D;
+  --color-muted: #F5F5F5;
+  --color-muted-foreground: #737373;
+  --color-accent: #E8B4B8;
+  --color-accent-foreground: #2D2D2D;
+  --color-border: #E5E5E5;
+  --color-text: #2D2D2D;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+.App {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background);
+}
+
+text {
+  color: var(--color-text);
+}
+
+@layer utilities {
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .py-safe {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .px-safe {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .p-safe {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .mt-safe {
+    margin-top: env(safe-area-inset-top);
+  }
+
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+
+  .ml-safe {
+    margin-left: env(safe-area-inset-left);
+  }
+
+  .mr-safe {
+    margin-right: env(safe-area-inset-right);
+  }
+}

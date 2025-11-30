@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "node16",
+    "moduleResolution": "node16",
+    "jsx": "preserve",
+    "jsxImportSource": "@lynx-js/react",
+    "lib": ["es2020", "dom"],
+    "baseUrl": ".",
+    "paths": {
+      "@lynx-js/types": ["./node_modules/@lynx-js/types"],
+      "@lynx-js/types/*": ["./node_modules/@lynx-js/types/*"],
+      "@lynx-js/react": ["./node_modules/@lynx-js/react"],
+      "@lynx-js/react/*": ["./node_modules/@lynx-js/react/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./node_modules"],
+    "strict": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "declaration": false,
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true
+  },
+  "include": ["src/**/*", "src/**/*.d.ts"],
+  "exclude": ["dist/", "node_modules/"]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "novia",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "rspeedy build",
+    "postbuild": "rm -rf ios/Novia/Novia/LynxResources.bundle/static && mkdir -p ios/Novia/Novia/LynxResources.bundle/static && if [ -d dist/static ]; then cp -R dist/static/* ios/Novia/Novia/LynxResources.bundle/static/; fi && if [ -f dist/index.lynx.bundle ]; then cp dist/index.lynx.bundle ios/Novia/Novia/LynxResources.bundle/index.lynx; fi",
+    "dev": "script -q /dev/null rspeedy dev",
+    "dev:direct": "rspeedy dev",
+    "dev:up": "./scripts/dev-up.sh",
+    "dev:down": "pm2 delete ecosystem.config.cjs 2>/dev/null || true",
+    "dev:status": "pm2 status",
+    "dev:logs": "pm2 logs --namespace novia",
+    "preview": "rspeedy preview",
+    "clean": "rm -rf node_modules dist .rollup.cache .tmp tsconfig.tsbuildinfo .eslintcache",
+    "test": "vitest run",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier . --write",
+    "ios:open": "open ios/Novia/Novia.xcworkspace",
+    "ios:clean": "cd ios/Novia && xcodebuild clean",
+    "ios:pods": "cd ios/Novia && pod install",
+    "backend:install": "cd backend && python3 -m venv .venv && . .venv/bin/activate && pip install -e '.[dev]'",
+    "backend:api": "cd backend && . .venv/bin/activate && uvicorn src.main:app --reload --port 8000",
+    "backend:worker": "cd backend && . .venv/bin/activate && python -m src.temporal.worker",
+    "temporal:start": "temporal server start-dev --ui-port 8233",
+    "setup": "npm install && npm run backend:install && echo '✅ Setup complete!'"
+  },
+  "dependencies": {
+    "@lynx-js/react": "^0.112.6"
+  },
+  "devDependencies": {
+    "@lynx-js/qrcode-rsbuild-plugin": "^0.4.0",
+    "@lynx-js/react-rsbuild-plugin": "^0.10.6",
+    "@lynx-js/rspeedy": "^0.9.11",
+    "@lynx-js/tailwind-preset-canary": "^0.1.1",
+    "@lynx-js/types": "3.4.11",
+    "@rsbuild/core": "^1.3.2",
+    "@rsbuild/plugin-sass": "^1.3.2",
+    "@rsbuild/plugin-type-check": "1.2.3",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.23",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "rsbuild-plugin-tailwindcss": "^0.2.2",
+    "tailwindcss": "^3.4.17",
+    "typescript": "~5.8.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
