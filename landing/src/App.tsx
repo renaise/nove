@@ -70,14 +70,14 @@ const NoviaLanding = () => {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { step: 1, icon: Camera, title: 'Capture Your True Silhouette', img: 'photo-1517841905240-472988babdf9', desc: 'Wear fitted activewear or a simple bodysuit—think of it as a blank canvas for your transformation. Your photos are strictly private.' },
-              { step: 2, icon: Sparkles, title: 'The Dream Filter', img: 'photo-1596386461350-326256694e4d', desc: '"Endless Love, Zero Effort." Swipe through thousands of styles, effortlessly. Filter by Fairy-tale, Modern, or Lace.' },
-              { step: 3, icon: Heart, title: 'The Moment of Truth', img: 'photo-1606800052052-a08af7148866', desc: '"Is It The One?" See yourself in your dream dress, flawlessly fitted by our AI technology.' },
-              { step: 4, icon: User, title: 'The Next Step', img: 'photo-1595777457583-95e059d581b8', desc: '"Ready to Feel the Fabric?" Connect with a stylist or book a fitting at a local boutique instantly.' }
+              { step: 1, icon: Camera, title: 'Capture Your True Silhouette', img: '/images/step1-silhouette.png', desc: 'Wear fitted activewear or a simple bodysuit—think of it as a blank canvas for your transformation. Your photos are strictly private.' },
+              { step: 2, icon: Sparkles, title: 'The Dream Filter', img: '/images/step2-filter.png', desc: '"Endless Love, Zero Effort." Swipe through thousands of styles, effortlessly. Filter by Fairy-tale, Modern, or Lace.' },
+              { step: 3, icon: Heart, title: 'The Moment of Truth', img: '/images/step3-tryon.png', desc: '"Is It The One?" See yourself in your dream dress, flawlessly fitted by our AI technology.' },
+              { step: 4, icon: User, title: 'The Next Step', img: '/images/step4-nextstep.png', desc: '"Ready to Feel the Fabric?" Connect with a stylist or book a fitting at a local boutique instantly.' }
             ].map(({ step, icon: Icon, title, img, desc }, idx) => (
               <div key={step} className={`group relative ${idx % 2 === 1 ? 'mt-12 md:mt-0' : ''}`}>
                 <div className="rounded-2xl overflow-hidden aspect-[3/4] mb-6 shadow-lg transition-transform duration-500 group-hover:-translate-y-2">
-                  <img src={`https://images.unsplash.com/${img}?auto=format&fit=crop&q=80`} alt={title} className="w-full h-full object-cover" />
+                  <img src={img} alt={title} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
                   <div className="absolute bottom-4 left-4 right-4 glass-card p-4 rounded-xl">
                     <div className="flex items-center gap-2 text-gold mb-1">
