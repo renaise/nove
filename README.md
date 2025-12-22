@@ -1,40 +1,43 @@
-# Nove
+# Nove V1: The Generative Bridal Marketplace
+> Powering the "Magic Mirror" for Brides and the "Digital Showroom" for Boutiques.
 
-# Nove V1: AI-Powered Bridal Discovery
-> The "Magic Mirror" experience powered by SAM 3, ANNY, and Stitch.
+## 1. Executive Summary
+Nove is an AI-orchestrated marketplace that connects high-intent brides with local boutique inventory through a hyper-realistic Virtual Try-On (VTO) experience. We use **SAM 3** for body and garment segmentation and **ANNY** for dynamic fabric warping, all orchestrated via the **Stitch** backend.
 
-## 1. Vision
-Nove is a high-end generative fitting room designed to eliminate the friction and emotional stress of bridal shopping. By leveraging state-of-the-art computer vision, we provide brides with a high-fidelity, private, and emotionally intelligent virtual try-on (VTO) experience.
+## 2. Technical Core: The Stitch Engine
+Nove utilizes a server-side pipeline to ensure high-fidelity renders without taxing mobile hardware.
 
-## 2. Technical Stack
-* **Segmentation:** SAM 3 (Segment Anything Model) - *Pixel-perfect body isolation.*
-* **Warping Engine:** ANNY (Animation-over-any) - *Dynamic garment draping.*
-* **Orchestration:** Stitch - *Backend pipeline management.*
-* **Client:** React Native / Expo.
-
-## 3. The "Stitch" Pipeline (Logic Flow)
-
-The system operates as a generative pipe rather than a simple overlay tool:
-
-| Stage | Input | Action | Output |
+| Stage | Actor | Technology | Output |
 | :--- | :--- | :--- | :--- |
-| **Ingress** | Mobile RAW | Client-side pose validation (MediaPipe). | Validated Payload |
-| **Masking** | SAM 3 | Isolate body; segment into: Skin, Base Clothing, Environment. | Binary Part-Masks |
-| **Fitting** | ANNY | Warp 2D/3D dress mesh onto SAM-defined coordinates. | Warped Asset |
-| **Blending** | Post-Processor | Match grain, shadows, and lighting to the original photo. | Final Render |
+| **Ingress (B2C)** | Bride | Mobile SDK / MediaPipe | Validated A-Pose Silhouette |
+| **Ingress (B2B)** | Boutique | Mobile SDK / SAM 3 | Background-removed Garment Asset |
+| **Processing** | Stitch | SAM 3 | Part-Level Segmentation Mask |
+| **Fitting** | Stitch | ANNY | Warped, Physics-Aware Garment |
+| **Egress** | App | Web-Sockets | The "Magic Moment" Render |
 
-[Image of a flowchart showing the integration of SAM 3 and ANNY models in an AI image processing pipeline]
 
-## 4. Feature Requirements (MVP)
 
-### A. The Studio (Capture)
-* **Active Guidance:** UI "Ghost Overlay" to ensure a standardized A-pose.
-* **Privacy-First:** Local pre-processing of silhouette masks.
-* **Validation:** Automated rejection of poor lighting or occluded limbs.
+## 3. Dual-Sided User Flows
 
-### B. The Gallery (Discovery)
-* **Vibe-Based Filtering:** Search by aesthetic (e.g., "Modern Minimalist") rather than just technical tags.
-* **Parallel Processing:** Pre-segmenting the active silhouette while the user browses.
+### A. The Bride's Journey (Discovery)
+1. **The Vault:** Secure silhouette capture with on-device privacy masking.
+2. **The Rack:** Browse localized inventory from partner boutiques.
+3. **The Try-On:** Trigger a 'Stitch' request to see the dress warped to her unique shape.
+4. **The Conversion:** Book a physical fitting. The app sends a "Lookbook" (renders + silhouette data) to the stylist.
 
-### C. The Magic Moment (VTO)
-* **Real-time Reveal:** Shimmering animation to mask server-side inference latency (5–7s).
+### B. The Boutique's Journey (Inventory Ingestion)
+1. **The Capture:** Take a photo of a dress on a mannequin in-store.
+2. **Automated Digitization:** SAM 3 strips the background and normalizes the lighting.
+3. **The Lead:** Receive high-intent booking requests including the bride's AI-generated "try-on" photos, reducing appointment time by 40%.
+
+## 4. Revenue Model
+* **Booking Fee:** $25 per appointment scheduled via Nove.
+* **Discovery Fee:** Small micro-transaction to "unlock" unlimited try-ons for a specific boutique's inventory.
+* **Lead Gen Revenue Share:** Commission on the final dress sale (Attributed via QR code at checkout).
+
+## 5. Technical Implementation Checklist (Stitch Pipeline)
+
+- [ ] **Boutique Asset Filter:** Fine-tune SAM 3 to distinguish between "White Dress" and "White Studio Wall."
+- [ ] **Anchor Point Mapping:** Map ANNY warp points to standard boutique mannequin dimensions.
+- [ ] **Lead Export:** Build a PDF generator for the "Stylist Packet."
+- [ ] **Stripe Connect:** Integrate split-payment logic for booking fee revenue shares.
