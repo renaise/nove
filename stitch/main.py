@@ -20,17 +20,23 @@ from .models import (
     BoutiqueGarmentResponse,
     TryOnRequest,
     TryOnResponse,
-    ProcessingStatus
+    ProcessingStatus,
+    # V2: Stylist Models
+    StylistAnalysisRequest,
+    StylistAnalysisResponse,
+    UpdateBoutiqueGarmentRequest,
+    GarmentSilhouetteTag
 )
 from .pipelines.bride import BridePipeline
 from .pipelines.boutique import BoutiquePipeline
 from .pipelines.tryon import TryOnPipeline
+from .pipelines.stylist import StylistPipeline
 
 # Initialize app
 app = FastAPI(
     title="Nove Stitch Engine",
-    description="AI-orchestrated virtual try-on pipeline for bridal gowns",
-    version="0.1.0"
+    description="AI-orchestrated generative digital stylist for bridal gowns",
+    version="0.2.0"
 )
 
 # Get settings
@@ -42,11 +48,13 @@ settings.temp_dir.mkdir(parents=True, exist_ok=True)
 
 # Mount static files for serving renders
 app.mount("/renders", StaticFiles(directory=settings.upload_dir / "renders"), name="renders")
+app.mount("/hero_renders", StaticFiles(directory=settings.upload_dir / "hero_renders"), name="hero_renders")
 
 # Initialize pipelines
 bride_pipeline = BridePipeline()
 boutique_pipeline = BoutiquePipeline()
 tryon_pipeline = TryOnPipeline()
+stylist_pipeline = StylistPipeline()  # V2: Generative Digital Stylist
 
 # WebSocket connection manager
 class ConnectionManager:
@@ -268,6 +276,89 @@ async def process_tryon(request: TryOnRequest):
     })
 
     return result
+
+
+# === STYLIST ENDPOINTS (V2: Generative Digital Stylist) ===
+
+@app.post("/stylist/analyze", response_model=StylistAnalysisResponse)
+async def analyze_with_stylist(request: StylistAnalysisRequest):
+    """
+    Full 4-stage Generative Digital Stylist analysis
+
+    Pipeline:
+    1. Capture: SAM 3 + MediaPipe for body segmentation
+    2. Analysis: Body proportion analysis (shoulder-to-waist, waist-to-hip ratios)
+    3. Curation: Silhouette matching and recommendations
+    4. Vision: Nano Banana Pro for 3 hero preview renders
+
+    Returns personalized dress silhouette recommendations with styling feedback
+    """
+    # Find image
+    image_path = None
+    for ext in [".jpg", ".jpeg", ".png", ".webp"]:
+        potential_path = settings.temp_dir / f"{request.image_id}{ext}"
+        if potential_path.exists():
+            image_path = potential_path
+            break
+
+    if not image_path:
+        raise HTTPException(status_code=404, detail=f"Image not found: {request.image_id}")
+
+    # Broadcast start
+    await manager.broadcast({
+        "type": "stylist_analysis_started",
+        "image_id": request.image_id,
+        "status": "processing"
+    })
+
+    # Run full 4-stage analysis
+    result = await stylist_pipeline.analyze_and_recommend(
+        image_path,
+        generate_hero_renders=request.generate_hero_renders,
+        max_recommendations=request.max_recommendations
+    )
+
+    # Broadcast completion
+    await manager.broadcast({
+        "type": "stylist_analysis_completed",
+        "analysis_id": result.analysis_id,
+        "status": result.status.value,
+        "recommendations": [
+            {"silhouette": rec.silhouette_type.value, "score": rec.match_score}
+            for rec in result.recommendations
+        ],
+        "message": result.message
+    })
+
+    return result
+
+
+@app.post("/boutique/tag-silhouette", response_model=GarmentSilhouetteTag)
+async def tag_garment_silhouette(request: UpdateBoutiqueGarmentRequest):
+    """
+    Tag boutique garment with silhouette type
+
+    Boutiques use this endpoint to categorize their inventory by silhouette type
+    (A-Line, Mermaid, Ballgown, etc.) so the stylist can filter and recommend
+    appropriate dresses based on body proportions.
+    """
+    # In production, this would update a database
+    # For now, return the tagged garment info
+    tag = GarmentSilhouetteTag(
+        garment_id=request.garment_id,
+        silhouette_type=request.silhouette_type,
+        best_for_body_shapes=request.best_for_body_shapes,
+        designer=request.designer,
+        price_range=request.price_range
+    )
+
+    await manager.broadcast({
+        "type": "garment_tagged",
+        "garment_id": tag.garment_id,
+        "silhouette_type": tag.silhouette_type.value
+    })
+
+    return tag
 
 
 # === WEBSOCKET ENDPOINT ===

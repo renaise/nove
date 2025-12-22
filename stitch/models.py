@@ -77,3 +77,86 @@ class StitchAnalysis(BaseModel):
     insights: list[str]
     actions_taken: list[str]
     metadata: dict = {}
+
+
+# ============================================================================
+# STYLIST MODELS (V2 - Generative Digital Stylist)
+# ============================================================================
+
+class SilhouetteType(str, Enum):
+    """Dress silhouette categories"""
+    A_LINE = "a_line"
+    BALLGOWN = "ballgown"
+    MERMAID = "mermaid"
+    EMPIRE_WAIST = "empire_waist"
+    SHEATH = "sheath"
+    TRUMPET = "trumpet"
+    TEA_LENGTH = "tea_length"
+    COLUMN = "column"
+
+
+class BodyProportions(BaseModel):
+    """Body proportion measurements extracted from silhouette"""
+    shoulder_to_waist_ratio: float = Field(ge=0.0, le=2.0, description="Shoulder width to waist ratio")
+    waist_to_hip_ratio: float = Field(ge=0.0, le=2.0, description="Waist to hip ratio")
+    height_estimate: Optional[str] = Field(None, description="Estimated height category: petite, average, tall")
+    body_shape: str = Field(description="Body shape category: hourglass, pear, apple, rectangle, inverted_triangle")
+    landmarks: dict = Field(default={}, description="12-point body landmarks from MediaPipe")
+    confidence: float = Field(ge=0.0, le=1.0, description="Confidence score of the analysis")
+
+
+class SilhouetteRecommendation(BaseModel):
+    """Silhouette style recommendation with reasoning"""
+    silhouette_type: SilhouetteType
+    match_score: float = Field(ge=0.0, le=1.0, description="How well this silhouette suits the body type")
+    reasoning: str = Field(description="Why this silhouette was recommended")
+    styling_tips: list[str] = Field(default=[], description="Specific styling advice")
+
+
+class StylistAnalysisRequest(BaseModel):
+    """Request for full stylist analysis (4-stage pipeline)"""
+    image_id: str
+    generate_hero_renders: bool = Field(default=True, description="Generate 3 hero preview renders")
+    max_recommendations: int = Field(default=3, ge=1, le=5, description="Number of silhouette recommendations")
+
+
+class StylistAnalysisResponse(BaseModel):
+    """Response from stylist analysis with recommendations"""
+    analysis_id: str
+    status: ProcessingStatus
+
+    # Stage 1: Capture (SAM 3 + MediaPipe)
+    segmentation_quality: Optional[ImageQuality] = None
+
+    # Stage 2: Analysis (Body Proportions)
+    body_proportions: Optional[BodyProportions] = None
+
+    # Stage 3: Curation (Recommendations)
+    recommendations: list[SilhouetteRecommendation] = []
+    recommended_garment_ids: list[str] = Field(default=[], description="Pre-filtered garments matching proportions")
+
+    # Stage 4: Vision (Hero Renders)
+    hero_renders: list[str] = Field(default=[], description="URLs to 3 generative preview renders")
+
+    # Metadata
+    processed_at: datetime
+    message: str
+    stylist_feedback: str = Field(default="", description="Human-readable feedback for the bride")
+
+
+class GarmentSilhouetteTag(BaseModel):
+    """Boutique garment tagged with silhouette type"""
+    garment_id: str
+    silhouette_type: SilhouetteType
+    best_for_body_shapes: list[str] = Field(default=[], description="Body shapes this dress flatters")
+    designer: Optional[str] = None
+    price_range: Optional[str] = None
+
+
+class UpdateBoutiqueGarmentRequest(BaseModel):
+    """Request to update garment with silhouette categorization"""
+    garment_id: str
+    silhouette_type: SilhouetteType
+    best_for_body_shapes: list[str] = []
+    designer: Optional[str] = None
+    price_range: Optional[str] = None
