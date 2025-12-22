@@ -1,4 +1,4 @@
-# Nove V1: The Generative Bridal Marketplace
+# Nove V1: The Bridal Gown Virtual Try On
 > Powering the "Magic Mirror" for Brides and the "Digital Showroom" for Boutiques.
 
 ## 1. Executive Summary
