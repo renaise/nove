@@ -1,43 +1,29 @@
-# Nove V1: The Bridal Marketplace
-> Powering the "Magic Mirror" for Brides and the "Digital Showroom" for Boutiques.
+# Nove V1: The Digital Stylist
+> Bridging the gap between body proportions and the "Yes" Dress.
 
-## 1. Executive Summary
-Nove is an AI-orchestrated marketplace that connects high-intent brides with local boutique inventory through a hyper-realistic Virtual Try-On (VTO) experience. We use **SAM 3** for body and garment segmentation and **ANNY** for dynamic fabric warping, all orchestrated via the **Stitch** backend.
+## 1. The Stylist Pipeline
+Nove uses a 4-stage intelligent flow to move from raw photo to curated vision.
 
-## 2. Technical Core: The Stitch Engine
-Nove utilizes a server-side pipeline to ensure high-fidelity renders without taxing mobile hardware.
-
-| Stage | Actor | Technology | Output |
+| Stage | Action | Technology | Goal |
 | :--- | :--- | :--- | :--- |
-| **Ingress (B2C)** | Bride | Mobile SDK / MediaPipe | Validated A-Pose Silhouette |
-| **Ingress (B2B)** | Boutique | Mobile SDK / SAM 3 | Background-removed Garment Asset |
-| **Processing** | Stitch | SAM 3 | Part-Level Segmentation Mask |
-| **Fitting** | Stitch | ANNY | Warped, Physics-Aware Garment |
-| **Egress** | App | Web-Sockets | The "Magic Moment" Render |
+| **1. Capture** | Silhouette Upload | SAM 3 + MediaPipe | Extract clean body mask + 12-point landmarks. |
+| **2. Analysis** | Proportion Logic | Custom CV Model | Determine shoulder-to-waist and waist-to-hip ratios. |
+| **3. Curation** | Silhouette Match | Recommendation Engine | Map proportions to styles (e.g., A-Line, Mermaid, Ballgown). |
+| **4. Vision** | Generative Try-On | Nano Banana Pro | Render 3 high-fidelity "Hero" previews to sell the vision. |
+
+## 2. Updated User Story: "The Guided Discovery"
+1. **The Scan:** User uploads a silhouette.
+2. **The Feedback:** "We've analyzed your proportions. Your frame is beautifully suited for **A-Line** and **Empire Waist** silhouettes."
+3. **The Gallery:** App filters the boutique database to show *only* matching styles first.
+4. **The Vision:** User taps "See the Vision." Nano Banana Pro generates a photorealistic render of her in the top-recommended style.
+
+## 3. The "Stitch Contract" Update (V2)
+The API payload must now include "Stylist Metadata":
+* **Request:** Includes `body_ratios` and `target_silhouette_category`.
+* **Response:** Returns `recommendation_logic` (Why this dress was chosen) to display as UI copy.
 
 
 
-## 3. Dual-Sided User Flows
-
-### A. The Bride's Journey (Discovery)
-1. **The Vault:** Secure silhouette capture with on-device privacy masking.
-2. **The Rack:** Browse localized inventory from partner boutiques.
-3. **The Try-On:** Trigger a 'Stitch' request to see the dress warped to her unique shape.
-4. **The Conversion:** Book a physical fitting. The app sends a "Lookbook" (renders + silhouette data) to the stylist.
-
-### B. The Boutique's Journey (Inventory Ingestion)
-1. **The Capture:** Take a photo of a dress on a mannequin in-store.
-2. **Automated Digitization:** SAM 3 strips the background and normalizes the lighting.
-3. **The Lead:** Receive high-intent booking requests including the bride's AI-generated "try-on" photos, reducing appointment time by 40%.
-
-## 4. Revenue Model
-* **Booking Fee:** $25 per appointment scheduled via Nove.
-* **Discovery Fee:** Small micro-transaction to "unlock" unlimited try-ons for a specific boutique's inventory.
-* **Lead Gen Revenue Share:** Commission on the final dress sale (Attributed via QR code at checkout).
-
-## 5. Technical Implementation Checklist (Stitch Pipeline)
-
-- [ ] **Boutique Asset Filter:** Fine-tune SAM 3 to distinguish between "White Dress" and "White Studio Wall."
-- [ ] **Anchor Point Mapping:** Map ANNY warp points to standard boutique mannequin dimensions.
-- [ ] **Lead Export:** Build a PDF generator for the "Stylist Packet."
-- [ ] **Stripe Connect:** Integrate split-payment logic for booking fee revenue shares.
+## 4. Boutique-End Integration
+Boutiques now tag their inventory by **Silhouette Type**. 
+* **Value Prop:** We don't just send them a lead; we send them a lead who already knows which silhouette flutters her frame, shortening the 90-minute appointment to 45 minutes.
