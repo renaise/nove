@@ -1,4 +1,4 @@
-import { useState } from '@lynx-js/react';
+import { useState, useRef } from '@lynx-js/react';
 
 // Import onboarding images
 import step1Image from '../assets/onboarding/step1-silhouette.png';
@@ -41,6 +41,9 @@ const SLIDES = [
   },
 ];
 
+// Minimum swipe distance to trigger slide change
+const SWIPE_THRESHOLD = 50;
+
 interface OnboardingCarouselProps {
   onComplete: () => void;
 }
@@ -48,6 +51,7 @@ interface OnboardingCarouselProps {
 const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showTooltip, setShowTooltip] = useState(false);
+  const touchStartRef = useRef<number>(0);
 
   const currentSlide = SLIDES[currentIndex];
   const isLastSlide = currentIndex === SLIDES.length - 1;
@@ -68,8 +72,46 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
     }
   };
 
+  // Swipe gesture handlers
+  const handleTouchStart = (e: any) => {
+    const touches = e.detail?.touches || e.touches || [];
+    const touch = touches[0];
+    if (touch) {
+      touchStartRef.current = touch.clientX ?? touch.pageX ?? touch.x ?? 0;
+    }
+  };
+
+  const handleTouchEnd = (e: any) => {
+    const touches = e.detail?.changedTouches || e.changedTouches || [];
+    const touch = touches[0];
+    if (touch) {
+      const endX = touch.clientX ?? touch.pageX ?? touch.x ?? 0;
+      const diff = touchStartRef.current - endX;
+
+      if (Math.abs(diff) > SWIPE_THRESHOLD) {
+        if (diff > 0) {
+          // Swipe left - go next
+          if (currentIndex < SLIDES.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+            setShowTooltip(false);
+          }
+        } else {
+          // Swipe right - go prev
+          if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
+            setShowTooltip(false);
+          }
+        }
+      }
+    }
+  };
+
   return (
-    <view className="flex-1 w-full pt-[60px] pb-10 px-6">
+    <view
+      className="flex-1 w-full pt-[60px] pb-10 px-6"
+      bindtouchstart={handleTouchStart}
+      bindtouchend={handleTouchEnd}
+    >
       {/* Image Container */}
       <view className="items-center mb-6">
         <view
@@ -144,30 +186,65 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
         )}
       </view>
 
-      {/* Pagination Dots */}
-      <view className="flex-row justify-center items-center mb-6" style={{ gap: '8px' }}>
-        {SLIDES.map((_, idx) => (
+      {/* Pagination Dots - Horizontal row */}
+      <view className="items-center mb-6">
+        <view style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
           <view
-            key={idx}
-            bindtap={() => {
-              setCurrentIndex(idx);
-              setShowTooltip(false);
-            }}
-            className="p-1"
+            bindtap={() => { setCurrentIndex(0); setShowTooltip(false); }}
+            style={{ padding: '4px' }}
           >
             <view
               style={{
-                width: idx === currentIndex ? '24px' : '8px',
+                width: currentIndex === 0 ? '24px' : '8px',
                 height: '8px',
                 borderRadius: '4px',
-                backgroundColor: idx === currentIndex ? '#D4AF37' : '#E5E5E5',
+                backgroundColor: currentIndex === 0 ? '#D4AF37' : '#E5E5E5',
               }}
             />
           </view>
-        ))}
+          <view
+            bindtap={() => { setCurrentIndex(1); setShowTooltip(false); }}
+            style={{ padding: '4px' }}
+          >
+            <view
+              style={{
+                width: currentIndex === 1 ? '24px' : '8px',
+                height: '8px',
+                borderRadius: '4px',
+                backgroundColor: currentIndex === 1 ? '#D4AF37' : '#E5E5E5',
+              }}
+            />
+          </view>
+          <view
+            bindtap={() => { setCurrentIndex(2); setShowTooltip(false); }}
+            style={{ padding: '4px' }}
+          >
+            <view
+              style={{
+                width: currentIndex === 2 ? '24px' : '8px',
+                height: '8px',
+                borderRadius: '4px',
+                backgroundColor: currentIndex === 2 ? '#D4AF37' : '#E5E5E5',
+              }}
+            />
+          </view>
+          <view
+            bindtap={() => { setCurrentIndex(3); setShowTooltip(false); }}
+            style={{ padding: '4px' }}
+          >
+            <view
+              style={{
+                width: currentIndex === 3 ? '24px' : '8px',
+                height: '8px',
+                borderRadius: '4px',
+                backgroundColor: currentIndex === 3 ? '#D4AF37' : '#E5E5E5',
+              }}
+            />
+          </view>
+        </view>
       </view>
 
-      {/* Navigation Buttons */}
+      {/* Navigation Buttons - Horizontal row */}
       <view className="flex-row" style={{ gap: '12px' }}>
         {/* Back Button (hidden on first slide) */}
         {currentIndex > 0 ? (

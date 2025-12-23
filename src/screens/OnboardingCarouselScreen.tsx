@@ -6,7 +6,7 @@ const OnboardingCarouselScreen = () => {
   const { navigateTo } = useApp();
 
   const handleComplete = () => {
-    NativeModules.ConsoleLynxProvider?.logToConsole(
+    console.log(
       '[OnboardingCarouselScreen] Carousel complete, navigating to photo capture',
     );
     OnboardingService.setCarouselComplete();

@@ -17,7 +17,7 @@ const LoginScreen = () => {
       const result = await AuthService.signInWithApple();
 
       if (result.success && result.user) {
-        NativeModules.ConsoleLynxProvider?.logToConsole(
+        console.log(
           `[LoginScreen] Sign in successful: ${result.user.email}`,
         );
         setUser({
@@ -28,17 +28,17 @@ const LoginScreen = () => {
 
         // Check onboarding progress and navigate accordingly
         if (!OnboardingService.isCarouselComplete()) {
-          NativeModules.ConsoleLynxProvider?.logToConsole(
+          console.log(
             '[LoginScreen] Navigating to onboarding carousel',
           );
           navigateTo('onboarding_carousel');
         } else if (!OnboardingService.isPhotoProvided()) {
-          NativeModules.ConsoleLynxProvider?.logToConsole(
+          console.log(
             '[LoginScreen] Navigating to photo capture',
           );
           navigateTo('onboarding_photo');
         } else {
-          NativeModules.ConsoleLynxProvider?.logToConsole(
+          console.log(
             '[LoginScreen] Onboarding complete, navigating to home',
           );
           navigateTo('home');
@@ -47,7 +47,7 @@ const LoginScreen = () => {
         setError(result.error || 'Sign in failed');
       }
     } catch (err) {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
+      console.log(
         `[LoginScreen] Sign in error: ${err}`,
       );
       setError(err instanceof Error ? err.message : 'An error occurred');

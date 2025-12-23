@@ -24,7 +24,7 @@ export const OnboardingService = {
       STORAGE_KEYS.CAROUSEL_COMPLETE,
       'true',
     );
-    NativeModules.ConsoleLynxProvider?.logToConsole(
+    console.log(
       '[OnboardingService] Carousel marked complete',
     );
   },
@@ -47,7 +47,7 @@ export const OnboardingService = {
       STORAGE_KEYS.PHOTO_PROVIDED,
       'true',
     );
-    NativeModules.ConsoleLynxProvider?.logToConsole(
+    console.log(
       '[OnboardingService] Photo marked as provided',
     );
   },
@@ -69,7 +69,7 @@ export const OnboardingService = {
     NativeModules.NativeLocalStorageModule?.removeStorageItem(
       STORAGE_KEYS.PHOTO_PROVIDED,
     );
-    NativeModules.ConsoleLynxProvider?.logToConsole(
+    console.log(
       '[OnboardingService] Onboarding state reset',
     );
   },

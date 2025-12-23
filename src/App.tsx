@@ -15,7 +15,7 @@ const AppInitializer = () => {
 
   useEffect(() => {
     const initializeApp = () => {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
+      console.log(
         '[App] Initializing app, checking session...',
       );
 
@@ -23,7 +23,7 @@ const AppInitializer = () => {
       const session = AuthService.restoreSession();
 
       if (session && session.user) {
-        NativeModules.ConsoleLynxProvider?.logToConsole(
+        console.log(
           `[App] Session restored for: ${session.user.email}`,
         );
         setUser(session.user);
@@ -32,7 +32,7 @@ const AppInitializer = () => {
         const carouselComplete = OnboardingService.isCarouselComplete();
         const photoProvided = OnboardingService.isPhotoProvided();
 
-        NativeModules.ConsoleLynxProvider?.logToConsole(
+        console.log(
           `[App] Onboarding status - carousel: ${carouselComplete}, photo: ${photoProvided}`,
         );
 
@@ -44,7 +44,7 @@ const AppInitializer = () => {
           navigateTo('home');
         }
       } else {
-        NativeModules.ConsoleLynxProvider?.logToConsole(
+        console.log(
           '[App] No session found, staying on login',
         );
         // Stay on login (default screen)

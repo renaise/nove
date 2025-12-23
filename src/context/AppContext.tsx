@@ -7,8 +7,9 @@ export type Screen =
   | 'onboarding_carousel' // Onboarding: 4-page intro carousel
   | 'onboarding_photo'   // Onboarding: Photo capture
   | 'home'
-  | 'tryon'              // Main try-on feature (MVP)
-  | 'gallery'            // Browse dresses/venues
+  | 'marketplace'        // Dress marketplace/gallery
+  | 'tryon'              // Try-on preview for selected dress
+  | 'gallery'            // Browse dresses/venues (legacy)
   | 'camera'             // Take/select photos
   | 'results'            // View try-on results
   | 'profile';

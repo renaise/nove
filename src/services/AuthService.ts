@@ -4,7 +4,7 @@ import type { AppleSignInResult } from '../types/native-modules.js';
 
 // API Configuration - Update this with your backend URL
 const API_BASE_URL = __DEV__
-  ? 'http://localhost:4000'
+  ? 'http://localhost:8000'
   : 'https://api.noviaapp.com';
 
 export interface User {
@@ -64,7 +64,7 @@ export class AuthService {
         };
       }
 
-      NativeModules.ConsoleLynxProvider?.logToConsole(
+      console.log(
         `[AuthService] Apple Sign In successful: ${result.userIdentifier}`,
       );
 
@@ -90,7 +90,7 @@ export class AuthService {
 
       return authResponse;
     } catch (error) {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
+      console.log(
         `[AuthService] Error: ${error}`,
       );
       return {
@@ -160,7 +160,7 @@ export class AuthService {
         refreshToken,
       };
     } catch (error) {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
+      console.log(
         `[AuthService] Backend auth error: ${error}`,
       );
       return {
@@ -190,7 +190,7 @@ export class AuthService {
         );
       }
     } catch (error) {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
+      console.log(
         `[AuthService] Failed to save session: ${error}`,
       );
     }
@@ -218,7 +218,7 @@ export class AuthService {
       const user = JSON.parse(userStr) as User;
       return { user, token, refreshToken: refreshToken || undefined };
     } catch (error) {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
+      console.log(
         `[AuthService] Failed to restore session: ${error}`,
       );
       return null;
@@ -234,7 +234,7 @@ export class AuthService {
       NativeModules.NativeLocalStorageModule?.removeStorageItem(STORAGE_KEYS.USER);
       NativeModules.NativeLocalStorageModule?.removeStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
     } catch (error) {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
+      console.log(
         `[AuthService] Failed to clear session: ${error}`,
       );
     }
@@ -291,7 +291,7 @@ export class AuthService {
 
       return false;
     } catch (error) {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
+      console.log(
         `[AuthService] Credential check error: ${error}`,
       );
       return false;

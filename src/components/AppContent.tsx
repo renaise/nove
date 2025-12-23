@@ -1,5 +1,6 @@
 import { useApp } from '../context/AppContext.jsx';
 import HomeScreen from '../screens/HomeScreen.jsx';
+import DressMarketplaceScreen from '../screens/DressMarketplaceScreen.jsx';
 import TryOnScreen from '../screens/TryOnScreen.jsx';
 import LoginScreen from '../screens/LoginScreen.jsx';
 import OnboardingCarouselScreen from '../screens/OnboardingCarouselScreen.jsx';
@@ -21,10 +22,12 @@ const AppContent = () => {
       return <OnboardingPhotoScreen />;
     case 'home':
       return <HomeScreen />;
+    case 'marketplace':
+      return <DressMarketplaceScreen />;
     case 'tryon':
       return <TryOnScreen />;
     case 'gallery':
-      return <HomeScreen />; // TODO: Add gallery screen
+      return <DressMarketplaceScreen />;
     case 'camera':
       return <HomeScreen />; // TODO: Add camera screen
     case 'results':

@@ -5,7 +5,7 @@ const HomeScreen = () => {
   const { navigateTo, state } = useApp();
 
   const handleTryOnPress = () => {
-    navigateTo('tryon');
+    navigateTo('marketplace');
   };
 
   return (
@@ -60,8 +60,8 @@ const HomeScreen = () => {
       </novia-liquid-glass>
 
       {/* Stats/Social Proof */}
-      <view className="flex-row justify-center items-center mb-6">
-        <view className="flex-row">
+      <view style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: '24px' }}>
+        <view style={{ display: 'flex', flexDirection: 'row' }}>
           {[1, 2, 3, 4, 5].map((i) => (
             <text key={i} className="text-gold">★</text>
           ))}

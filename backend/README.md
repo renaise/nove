@@ -1,162 +1,195 @@
 # Novia Backend
 
-AI-powered wedding dress virtual try-on backend.
+AI-powered wedding dress recommendation and body analysis service.
 
-## Stack
+## Features
 
-- **FastAPI** - Modern async web framework
-- **Strawberry** - GraphQL with Python type hints
-- **SQLAlchemy** - Async ORM with asyncpg
-- **Temporal** - Workflow orchestration for job queuing
-- **Google GenAI** - Nano Banana Pro for image generation
-- **Cloudflare R2** - Image storage (S3-compatible)
+- **Body Analysis**: Extract 3D body mesh from photos using SAM-3D-Body
+- **Body Type Classification**: Classify body types (hourglass, pear, apple, etc.)
+- **Silhouette Recommendations**: Recommend flattering dress silhouettes
+- **Dress Size Calculation**: Calculate US bridal dress sizes from measurements
+- **Dress Matching**: Query dresses by silhouette and size availability
+- **Virtual Try-On**: Generate try-on previews using Nano Banana Pro (Gemini)
 
-## Setup
+## Quick Start
 
 ### Prerequisites
 
 - Python 3.11+
-- PostgreSQL 14+
-- Temporal server (local or cloud)
-- Google GenAI API key
-- Cloudflare R2 bucket
+- [uv](https://docs.astral.sh/uv/) package manager
+- Docker & Docker Compose (for development)
+- NVIDIA GPU + CUDA 12.1 (for production SAM-3D-Body inference)
 
-### Installation
+### Development Setup
 
 ```bash
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate  # or `.venv\Scripts\activate` on Windows
-
 # Install dependencies
-pip install -e ".[dev]"
+uv sync --dev
 
-# Copy environment file
-cp .env.example .env
-# Edit .env with your credentials
-```
+# Start database
+docker compose up -d db
 
-### Database Setup
-
-```bash
-# Run migrations (creates tables)
-# Tables are auto-created on first startup, or use Alembic:
-alembic upgrade head
-```
-
-### Running
-
-```bash
-# Terminal 1: Start the API server
-uvicorn src.main:app --reload --port 8000
-
-# Terminal 2: Start the Temporal worker
-python -m src.temporal.worker
-
-# Terminal 3: Start Temporal server (if running locally)
-temporal server start-dev
-```
-
-### Development
-
-```bash
-# Format code
-ruff format .
-
-# Lint
-ruff check .
-
-# Type check
-mypy src
+# Run the API server
+uv run uvicorn src.main:app --reload
 
 # Run tests
-pytest
+uv run pytest
+
+# Type check
+uv run ty check src/
+
+# Lint
+uv run ruff check src/
 ```
 
-## API
+### Docker Development
 
-### GraphQL Endpoint
+```bash
+# Start all services (API + database)
+docker compose up -d
 
-`POST /graphql`
+# View logs
+docker compose logs -f api
 
-### Example Queries
+# Stop services
+docker compose down
+```
 
-```graphql
-# List available dresses
-query {
-  dresses {
-    id
-    name
-    imageUrl
-    style
-  }
-}
+## API Endpoints
 
-# Create a try-on request
-mutation {
-  createTryOn(input: {
-    personImageBase64: "..."
-    dressId: "dress-uuid"
-  }) {
-    id
-    status
-    message
-  }
-}
+### Body Analysis
 
-# Check try-on status
-query {
-  tryOnRequest(id: "request-uuid") {
-    id
-    status
-    resultImageUrl
-    errorMessage
-  }
+```bash
+POST /api/analyze-body
+Content-Type: application/json
+
+{
+  "images": ["base64_encoded_image"],
+  "user_id": "optional_user_id"
 }
 ```
 
-### REST Endpoints
+### Dress Recommendations
 
-- `GET /health` - Health check
-- `GET /docs` - OpenAPI documentation
-- `GET /graphql` - GraphQL Playground
+```bash
+POST /api/get-dress-recommendations
+Content-Type: application/json
+
+{
+  "silhouettes": ["mermaid", "a-line"],
+  "user_size": 8,
+  "price_range": {"min": 1000, "max": 3000},
+  "limit": 10
+}
+```
+
+### Try-On Generation
+
+```bash
+POST /api/generate-tryon
+Content-Type: application/json
+
+{
+  "user_photo": "base64_or_url",
+  "dress_id": "dress_123"
+}
+```
+
+### Reference Endpoints
+
+- `GET /api/silhouettes` - List all silhouette types
+- `GET /api/size-chart` - Get bridal sizing chart
+- `GET /api/health` - Health check
 
 ## Architecture
 
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Mobile    │────▶│   FastAPI   │────▶│  PostgreSQL │
-│    App      │     │  (GraphQL)  │     │             │
-└─────────────┘     └──────┬──────┘     └─────────────┘
-                          │
-                          ▼
-                   ┌─────────────┐
-                   │  Temporal   │
-                   │   Server    │
-                   └──────┬──────┘
-                          │
-                          ▼
-                   ┌─────────────┐     ┌─────────────┐
-                   │   Worker    │────▶│ Google GenAI│
-                   │ (Activities)│     │(Nano Banana)│
-                   └──────┬──────┘     └─────────────┘
-                          │
-                          ▼
-                   ┌─────────────┐
-                   │ Cloudflare  │
-                   │     R2      │
-                   └─────────────┘
+src/
+├── main.py              # FastAPI app entry
+├── config.py            # Environment configuration
+├── api/
+│   ├── routes.py        # API endpoints
+│   └── schemas.py       # Pydantic models
+├── services/
+│   ├── body_analysis.py # SAM-3D-Body integration
+│   ├── body_type.py     # Body type classification
+│   ├── silhouette.py    # Silhouette recommendations
+│   ├── sizing.py        # Dress size calculation
+│   ├── dress_matcher.py # Database queries
+│   └── tryon_generator.py # Gemini integration
+├── models/
+│   └── database.py      # SQLAlchemy models
+└── utils/
+    ├── mesh_utils.py    # 3D mesh processing
+    └── image_utils.py   # Image preprocessing
 ```
 
-## Workflow
+## Configuration
 
-1. User uploads photo via GraphQL mutation
-2. Request is saved to DB with PENDING status
-3. Temporal workflow is started
-4. Worker executes activities:
-   - Upload person image to R2
-   - Fetch dress image URL
-   - Call Nano Banana Pro API
-   - Upload result to R2
-   - Update DB with result
-5. Mobile app polls for status or uses subscription
+Environment variables (prefix: `NOVIA_`):
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | Required |
+| `GEMINI_API_KEY` | Google Gemini API key | Required for try-on |
+| `AWS_REGION` | AWS region for S3 | `us-east-1` |
+| `S3_BUCKET` | S3 bucket for assets | `novia-assets` |
+| `SAM3D_CHECKPOINT_PATH` | Path to SAM-3D-Body model | `./checkpoints/...` |
+| `DEBUG` | Enable debug mode | `false` |
+
+## Important: SAM-3D Measurement Limitations
+
+**SAM-3D absolute measurements cannot be trusted.** The mesh has no real-world scale reference - it only captures the **relative shape/silhouette** of the person.
+
+### What SAM-3D provides:
+- ✅ Relative body proportions (waist/hip ratio, bust/hip ratio)
+- ✅ Body silhouette shape
+- ✅ Anatomical landmark positions (relative)
+
+### What SAM-3D does NOT provide:
+- ❌ Absolute measurements in cm/inches
+- ❌ Actual height (mesh height varies by camera distance/angle)
+- ❌ Actual weight
+
+### How we extract real measurements:
+
+1. **User provides**: height (required) + gender (required)
+2. **SAM-3D provides**: body shape ratios from mesh
+3. **ANNY fitting**: matches ANNY parametric model to SAM-3D shape ratios
+4. **Scale**: ANNY mesh is scaled to user's actual height
+5. **Output**: real-world measurements from scaled ANNY model
+
+### Dynamic Position Finding
+
+We don't use fixed height percentages for bust/waist/hips. Instead, we scan the mesh:
+- **Bust**: where arms split off (1 loop → 3 loops transition)
+- **Waist**: narrowest torso point between bust and hips
+- **Hips**: widest point in the pelvis region (max perimeter)
+
+This adapts to different poses and body types.
+
+### Expected Accuracy
+
+With proper input (form-fitting clothing, good pose, accurate height/gender):
+- **~5-7cm MAE** for bust/waist/hips
+- **~1-2 dress sizes** accuracy
+
+Accuracy degrades with: baggy clothing, unusual poses, inaccurate height input.
+
+## Model Setup (SAM-3D-Body)
+
+```bash
+# Download SAM-3D-Body checkpoints
+hf download facebook/sam-3d-body-dinov3 --local-dir checkpoints/sam-3d-body-dinov3
+
+# Structure:
+# checkpoints/
+#   sam-3d-body-dinov3/
+#     model.ckpt
+#     assets/
+#       mhr_model.pt
+```
+
+## License
+
+Proprietary - Novia Inc.

@@ -1,54 +1,66 @@
+"""Main FastAPI application entry point."""
+
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from strawberry.fastapi import GraphQLRouter
 
-from src.api.resolvers import schema
-from src.core.config import settings
-from src.core.database import engine, Base
+from src.api.routes import router
+from src.config import settings
+from src.models.database import engine
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Startup: create tables if they don't exist
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """Application lifespan handler for startup/shutdown."""
+    # Startup
+    # Note: In production, use Alembic migrations instead of create_all
+    # async with engine.begin() as conn:
+    #     await conn.run_sync(Base.metadata.create_all)
+
     yield
-    # Shutdown: dispose engine
+
+    # Shutdown
     await engine.dispose()
 
 
 app = FastAPI(
-    title="Novia API",
-    description="AI Wedding Dress Virtual Try-On Backend",
+    title="Novia Backend",
+    description="AI-powered wedding dress recommendation and body analysis service",
     version="0.1.0",
     lifespan=lifespan,
 )
 
-# CORS
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=["*"],  # Configure appropriately for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# GraphQL endpoint
-graphql_router = GraphQLRouter(schema)
-app.include_router(graphql_router, prefix="/graphql")
-
-
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy", "service": "novia-backend"}
+# Include API routes
+app.include_router(router)
 
 
 @app.get("/")
-async def root():
+async def root() -> dict[str, str]:
+    """Root endpoint."""
     return {
-        "message": "Novia API - AI Wedding Dress Try-On",
-        "docs": "/docs",
-        "graphql": "/graphql",
+        "name": "Novia Backend",
+        "version": "0.1.0",
+        "status": "running",
     }
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "src.main:app",
+        host=settings.host,
+        port=settings.port,
+        reload=settings.debug,
+    )

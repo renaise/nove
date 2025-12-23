@@ -1,6 +1,7 @@
 import { useState } from '@lynx-js/react';
 import { useApp } from '../context/AppContext.jsx';
 import { OnboardingService } from '../services/OnboardingService.js';
+import { galleryPickerService } from '../services/GalleryPickerService.js';
 import { SelfieIcon, GalleryIcon, CameraIcon } from '../components/Icons.jsx';
 
 const OnboardingPhotoScreen = () => {
@@ -13,35 +14,30 @@ const OnboardingPhotoScreen = () => {
     setError(null);
 
     try {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
-        '[OnboardingPhotoScreen] Opening gallery picker',
-      );
+      console.log('[OnboardingPhotoScreen] Opening gallery picker');
 
-      const result = await NativeModules.NoviaGalleryPickerModule?.openGalleryPicker({
-        selectionLimit: 1,
-        mediaTypes: 'images',
+      // Service checks/requests permissions BEFORE opening the picker
+      const media = await galleryPickerService.pickImage({
         presentationStyle: 'large',
       });
 
-      NativeModules.ConsoleLynxProvider?.logToConsole(
-        `[OnboardingPhotoScreen] Gallery result: ${JSON.stringify(result)}`,
-      );
+      console.log(`[OnboardingPhotoScreen] Gallery result: ${JSON.stringify(media)}`);
 
-      if (result && !result.cancelled && result.media && result.media[0]) {
-        const photoUri = result.media[0].uri;
-        setSelectedPhoto(photoUri);
+      if (media) {
+        setSelectedPhoto(media.uri);
         OnboardingService.setPhotoProvided();
         navigateTo('home');
-      } else if (result?.cancelled) {
-        NativeModules.ConsoleLynxProvider?.logToConsole(
-          '[OnboardingPhotoScreen] Gallery picker cancelled',
-        );
+      } else {
+        console.log('[OnboardingPhotoScreen] Gallery picker cancelled');
       }
     } catch (err) {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
-        `[OnboardingPhotoScreen] Gallery error: ${err}`,
-      );
-      setError('Failed to select photo. Please try again.');
+      console.log(`[OnboardingPhotoScreen] Gallery error: ${err}`);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      if (errorMessage.includes('permissions are required')) {
+        setError('Please grant photo access in Settings to continue.');
+      } else {
+        setError('Failed to select photo. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -52,30 +48,30 @@ const OnboardingPhotoScreen = () => {
     setError(null);
 
     try {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
-        '[OnboardingPhotoScreen] Opening camera',
-      );
+      console.log('[OnboardingPhotoScreen] Opening camera');
 
-      // Note: PHPicker doesn't support camera directly
-      // For camera, we would need UIImagePickerController
-      // For MVP, using gallery picker which may prompt camera access
-      const result = await NativeModules.NoviaGalleryPickerModule?.openGalleryPicker({
-        selectionLimit: 1,
-        mediaTypes: 'images',
+      // Service checks/requests permissions BEFORE opening the picker
+      const media = await galleryPickerService.takePhoto({
         presentationStyle: 'fullScreen',
       });
 
-      if (result && !result.cancelled && result.media && result.media[0]) {
-        const photoUri = result.media[0].uri;
-        setSelectedPhoto(photoUri);
+      console.log(`[OnboardingPhotoScreen] Camera result: ${JSON.stringify(media)}`);
+
+      if (media) {
+        setSelectedPhoto(media.uri);
         OnboardingService.setPhotoProvided();
         navigateTo('home');
+      } else {
+        console.log('[OnboardingPhotoScreen] Camera cancelled');
       }
     } catch (err) {
-      NativeModules.ConsoleLynxProvider?.logToConsole(
-        `[OnboardingPhotoScreen] Camera error: ${err}`,
-      );
-      setError('Failed to capture photo. Please try again.');
+      console.log(`[OnboardingPhotoScreen] Camera error: ${err}`);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      if (errorMessage.includes('permissions are required')) {
+        setError('Please grant camera access in Settings to continue.');
+      } else {
+        setError('Failed to capture photo. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
