@@ -13,6 +13,7 @@ import httpx
 import numpy as np
 import trimesh
 from scipy.spatial import cKDTree
+from services.anny_pose_solver import ANNYPoseSolver
 
 # ANNY imports - requires anny package installed
 try:
@@ -557,11 +558,10 @@ class ANNYBodyAnalyzer:
         if 'hip_l' in joints and 'hip_r' in joints:
             joints['pelvis'] = (joints['hip_l'] + joints['hip_r']) / 2
 
-        # Adjust neck (MHR70 has a neck point at 69, but we can refine it)
-        # If neck(69) exists, use it. Otherwise compute from shoulders.
-        if 'neck' not in joints and 'shoulder_l' in joints and 'shoulder_r' in joints:
-             joints['neck'] = (joints['shoulder_l'] + joints['shoulder_r']) / 2
-             joints['neck'][2] += 0.05 
+        # Adjust SAM-3D head (front surface) to match ANNY head (center)
+        # Move head backward by ~16cm
+        if 'head' in joints:
+            joints['head'][1] += 0.10
 
         return joints, kp_final
 
@@ -742,218 +742,13 @@ class ANNYBodyAnalyzer:
     ) -> dict[str, np.ndarray]:
         """
         Compute bone rotations to move source joints to target joint positions.
-
-        For each limb chain, computes the rotation needed to align
-        the bone direction from source to target.
-
-        Args:
-            source_joints: ANNY joint positions (T-pose)
-            target_joints: SAM-3D extracted joint positions
-            rest_bone_poses: Optional (J, 4, 4) array of global bone transforms in rest pose
-            bone_labels: Optional list of bone names corresponding to rest_bone_poses indices
-
-        Returns:
-            Dictionary of bone rotations as rotation vectors (axis-angle) in LOCAL bone space
+        Delegates to ANNYPoseSolver for hierarchical solving.
         """
-        from scipy.spatial.transform import Rotation
-
-        rotations = {}
-
-        # Map bone names to indices for looking up rest poses
-        bone_indices = {}
-        if bone_labels:
-            for i, name in enumerate(bone_labels):
-                bone_indices[name] = i
-
-        # Define bone chains: (parent_joint, child_joint, bone_name)
-        bone_chains = [
-            # Arms
-            ("shoulder_l", "elbow_l", "upperarm01.L"),
-            ("elbow_l", "wrist_l", "lowerarm01.L"),
-            ("shoulder_r", "elbow_r", "upperarm01.R"),
-            ("elbow_r", "wrist_r", "lowerarm01.R"),
-            # Legs
-            ("hip_l", "knee_l", "upperleg01.L"),
-            ("knee_l", "ankle_l", "lowerleg01.L"),
-            ("hip_r", "knee_r", "upperleg01.R"),
-            ("knee_r", "ankle_r", "lowerleg01.R"),
-            # Neck/head
-            ("neck", "head", "neck01"),
-        ]
-
-        # Compute pelvis tilt from hip position differences
-        # Method 1: Z difference (height) - if our joint extraction captures it
-        # Method 2: Y difference (forward/backward) - indicates rotated pelvis
-        if "hip_l" in target_joints and "hip_r" in target_joints:
-            left_hip = target_joints["hip_l"]
-            right_hip = target_joints["hip_r"]
-
-            z_diff = right_hip[2] - left_hip[2]  # positive if right is higher
-            y_diff = left_hip[1] - right_hip[1]  # positive if left is more forward
-            hip_width = np.linalg.norm(left_hip - right_hip)
-
-            print(f"\n=== DEBUG pelvis tilt ===")
-            print(f"left_hip: [{left_hip[0]:.3f}, {left_hip[1]:.3f}, {left_hip[2]:.3f}]")
-            print(f"right_hip: [{right_hip[0]:.3f}, {right_hip[1]:.3f}, {right_hip[2]:.3f}]")
-            print(f"z_diff: {z_diff:.4f}, y_diff: {y_diff:.4f}, hip_width: {hip_width:.3f}")
-
-            if hip_width > 0.01:
-                # Compute tilt angles from both methods
-                z_tilt = np.arcsin(np.clip(z_diff / hip_width, -1, 1))
-                y_tilt = np.arcsin(np.clip(y_diff / hip_width, -1, 1))
-
-                print(f"z_tilt (hip drop) angle: {np.degrees(z_tilt):.2f}°")
-                print(f"y_tilt (forward rotation) angle: {np.degrees(y_tilt):.2f}°")
-
-                # Use Y difference as proxy for pelvis tilt when Z is not captured
-                # If left hip is more forward, pelvis is likely tilted with left side lower
-                # This is because in a typical stance, forward hip = lower hip
-                effective_tilt = z_tilt if abs(z_tilt) > np.radians(1) else -y_tilt * 0.5
-
-                if abs(effective_tilt) > np.radians(1):
-                    pelvis_rotvec = np.array([0, 0, effective_tilt])
-                    rotations["root"] = pelvis_rotvec * 1.0
-                    print(f"Applied pelvis_rotvec: {pelvis_rotvec} ({np.degrees(effective_tilt):.1f}°)")
-                else:
-                    print(f"Tilt too small, not applied")
-
-        # Compute global body forward lean from spine axis
-        # This tilts ANNY's root to match SAM-3D's body orientation
-        # Use pelvis→neck or pelvis→shoulder midpoint as spine vector
-        spine_top = None
-        if "neck" in target_joints:
-            spine_top = target_joints["neck"]
-        elif "shoulder_l" in target_joints and "shoulder_r" in target_joints:
-            spine_top = (target_joints["shoulder_l"] + target_joints["shoulder_r"]) / 2
-
-        if spine_top is not None and "pelvis" in target_joints:
-            spine_vec = spine_top - target_joints["pelvis"]
-            spine_len = np.linalg.norm(spine_vec)
-
-            if spine_len > 0.01:
-                spine_vec = spine_vec / spine_len
-
-                # ANNY's spine is vertical (+Z in rest pose)
-                # Forward lean = negative Y component (leaning toward -Y = forward in ANNY space)
-                # This is a rotation around the X-axis
-                forward_lean = np.arctan2(-spine_vec[1], spine_vec[2])
-
-                # Side lean = X component (leaning left/right)
-                # This is a rotation around the Y-axis
-                side_lean = np.arctan2(spine_vec[0], spine_vec[2])
-
-                print(f"\n=== DEBUG spine axis (body lean) ===")
-                print(f"spine_vec: [{spine_vec[0]:.4f}, {spine_vec[1]:.4f}, {spine_vec[2]:.4f}]")
-                print(f"forward_lean (X-rot): {np.degrees(forward_lean):.2f}°")
-                print(f"side_lean (Y-rot): {np.degrees(side_lean):.2f}°")
-
-                # Apply forward lean as X-rotation to root
-                # Threshold: only apply if lean > 2 degrees
-                if abs(forward_lean) > np.radians(2):
-                    # Add to existing root rotation (from hip tilt)
-                    root_rot = rotations.get("root", np.zeros(3))
-                    root_rot[0] += forward_lean  # X-axis rotation
-                    rotations["root"] = root_rot
-                    print(f"Applied forward_lean to root: {np.degrees(forward_lean):.2f}°")
-
-                # Apply side lean as Y-rotation if significant
-                if abs(side_lean) > np.radians(2):
-                    root_rot = rotations.get("root", np.zeros(3))
-                    root_rot[1] += side_lean  # Y-axis rotation
-                    rotations["root"] = root_rot
-                    print(f"Applied side_lean to root: {np.degrees(side_lean):.2f}°")
-
-        for parent, child, bone_name in bone_chains:
-            if parent not in source_joints or child not in source_joints:
-                continue
-            if parent not in target_joints or child not in target_joints:
-                continue
-
-            # Source direction (ANNY T-pose)
-            src_dir = source_joints[child] - source_joints[parent]
-            src_len = np.linalg.norm(src_dir)
-            src_dir = src_dir / (src_len + 1e-8)
-
-            # Target direction (SAM-3D pose)
-            tgt_dir = target_joints[child] - target_joints[parent]
-            # Flip X to match ANNY's coordinate convention
-            tgt_dir[0] = -tgt_dir[0]
-            tgt_len = np.linalg.norm(tgt_dir)
-            tgt_dir = tgt_dir / (tgt_len + 1e-8)
-
-
-            # Compute rotation from source to target (World Space)
-            # Using Rodrigues' rotation formula
-            axis = np.cross(src_dir, tgt_dir)
-            axis_norm = np.linalg.norm(axis)
-
-            if axis_norm < 1e-6:
-                # Vectors are parallel, no rotation needed (identity = zero rotvec)
-                rotations[bone_name] = np.zeros(3)
-            else:
-                axis = axis / axis_norm
-                angle = np.arccos(np.clip(np.dot(src_dir, tgt_dir), -1, 1))
-                world_rotvec = axis * angle
-
-                # Convert World Rotation to Local Rotation
-                # Transform the rotation into the bone's local frame using basis change:
-                # R_local = R_rest^T @ R_world @ R_rest
-                if rest_bone_poses is not None and bone_name in bone_indices:
-                    idx = bone_indices[bone_name]
-                    # Get Global Rest Orientation (3x3 rotation matrix from 4x4 transform)
-                    rest_global_rot = rest_bone_poses[idx, :3, :3]
-
-                    # Convert world rotvec to matrix
-                    world_rot_mat = Rotation.from_rotvec(world_rotvec).as_matrix()
-
-                    # Transform: Local = Inverse(Rest) @ World @ Rest
-                    # For rotation matrices, inverse = transpose
-                    local_rot_mat = rest_global_rot.T @ world_rot_mat @ rest_global_rot
-                    local_rotvec = Rotation.from_matrix(local_rot_mat).as_rotvec()
-
-                    # DEBUG: Print what's happening for leg and arm bones
-                    if "leg" in bone_name.lower() or "arm" in bone_name.lower():
-                        print(f"\n=== DEBUG {bone_name} ===")
-                        print(f"parent={parent}, child={child}")
-                        print(f"src_parent: {source_joints[parent]}")
-                        print(f"src_child:  {source_joints[child]}")
-                        print(f"src_dir: {src_dir}")
-                        print(f"tgt_dir: {tgt_dir}")
-                        print(f"angle (deg): {np.degrees(angle):.1f}")
-                        print(f"world_rotvec: {world_rotvec} (mag: {np.linalg.norm(world_rotvec):.3f})")
-                        print(f"local_rotvec: {local_rotvec} (mag: {np.linalg.norm(local_rotvec):.3f})")
-
-                    # Use local rotation for rest_relative parameterization.
-                    # ANNY Coordinate System: Z-up, Left=X+, Back=Y+
-                    # SAM-3D Coordinate System: Y-up, Right=X+, Back=Z+ (normalized to ANNY space before this)
-                    
-                    # The computed local_rotvec is derived from the difference between the source (ANNY T-pose)
-                    # and the target (SAM-3D pose) vectors in the local bone frame.
-
-                    # Apply per-axis sensitivity scaling to refine the pose.
-                    # This accounts for:
-                    # 1. Skinning artifacts (linear blend skinning volume loss)
-                    # 2. Differences in joint definitions between the skeletal model and surface keypoints
-                    # 3. Preventing extreme/unnatural rotations
-                    if "upperleg" in bone_name.lower() or "lowerleg" in bone_name.lower():
-                        # Legs: sensitive to X (forward/back) and Z (abduction)
-                        scaled_rotvec = np.array([
-                            -local_rotvec[0] * 0.5,  # X-axis (forward/backward) - Negated for correct direction
-                            local_rotvec[1] * 0.33,  # Y-axis (twist) - Dampened
-                            local_rotvec[2] * 0.33,  # Z-axis (inward/outward) - Dampened
-                        ])
-                        rotations[bone_name] = scaled_rotvec
-                    elif "upperarm" in bone_name.lower():
-                        rotations[bone_name] = local_rotvec * 1.0  # Arms: Full range of motion usually required
-                    elif "neck" in bone_name.lower():
-                        rotations[bone_name] = -local_rotvec * 1.0  # Neck: often inverted in simple chains
-                    else:
-                        rotations[bone_name] = local_rotvec
-                else:
-                    # Fallback: use world rotation directly
-                    rotations[bone_name] = world_rotvec
-
-        return rotations
+        if bone_labels is None:
+            bone_labels = self._model.bone_labels
+            
+        solver = ANNYPoseSolver(bone_labels)
+        return solver.compute_pose(source_joints, target_joints, rest_bone_poses)
 
     def _apply_pose_to_anny(
         self,
@@ -1348,7 +1143,7 @@ class ANNYBodyAnalyzer:
         # Detect and normalize mesh orientation
         z_range = vertices[:, 2].max() - vertices[:, 2].min()
         y_range = vertices[:, 1].max() - vertices[:, 1].min()
-        
+
         if z_range > y_range:
             # Already Z-up (ANNY space)
             transformed = vertices.copy()
@@ -1358,9 +1153,41 @@ class ANNYBodyAnalyzer:
             transformed = vertices[:, [0, 2, 1]].copy()
             transformed[:, 1] *= -1  # Flip Y (was depth)
             print("  Input mesh detected as Y-up (Raw SAM-3D space)")
-        
-        mesh_center = transformed.mean(axis=0)
-        transformed -= mesh_center  # Center
+
+        # ===== CENTER AT PELVIS =====
+        # Both mesh and keypoints should be pelvis-centered for alignment.
+        # Find pelvis from mesh geometry (not keypoints - they're in a different coordinate space).
+
+        # First, roughly center to make slicing work
+        rough_center = transformed.mean(axis=0)
+        transformed -= rough_center
+
+        # Find pelvis level (~50-53% of height) using mesh slicing
+        min_z = transformed[:, 2].min()
+        max_z = transformed[:, 2].max()
+        height = max_z - min_z
+        pelvis_z = min_z + height * 0.52  # Pelvis is around 52% height
+
+        # Create temp mesh for slicing
+        if faces is not None:
+            temp_mesh = trimesh.Trimesh(vertices=transformed, faces=faces, process=False)
+        else:
+            temp_mesh = trimesh.PointCloud(transformed).convex_hull
+
+        # Find pelvis center from mesh slice
+        pelvis_slice = temp_mesh.section(plane_normal=[0, 0, 1], plane_origin=[0, 0, pelvis_z])
+        if pelvis_slice and pelvis_slice.discrete:
+            # Find largest loop (torso, not legs)
+            largest_loop = max(pelvis_slice.discrete, key=lambda l: len(l))
+            pelvis_xy = largest_loop[:, :2].mean(axis=0)
+            mesh_pelvis = np.array([pelvis_xy[0], pelvis_xy[1], pelvis_z])
+        else:
+            # Fallback: pelvis at origin (mesh already roughly centered)
+            mesh_pelvis = np.array([0.0, 0.0, pelvis_z])
+
+        # Re-center at pelvis
+        transformed -= mesh_pelvis
+        print(f"  Centered mesh at pelvis: [{mesh_pelvis[0]:.3f}, {mesh_pelvis[1]:.3f}, {mesh_pelvis[2]:.3f}]")
 
         # Create mesh for landmark extraction
         if faces is not None:
@@ -1373,17 +1200,12 @@ class ANNYBodyAnalyzer:
         landmarks = self._extract_skeletal_landmarks(sam3d_mesh)
 
         # ===== PHASE 1b: Extract joint positions =====
+        # Keypoints from _extract_joints_from_keypoints are already pelvis-centered,
+        # so they will align with the pelvis-centered mesh.
         sam3d_keypoints_all = None
         if keypoints_3d:
-            # Use landmarks["pelvis_center"] if available, otherwise fallback to origin (0,0,0)
-            target_pelvis = landmarks.get("pelvis_center")
-            if target_pelvis is None:
-                # If landmark extraction failed, use origin (mesh is centered)
-                target_pelvis = np.zeros(3)
-                
             sam3d_joints, sam3d_keypoints_all = self._extract_joints_from_keypoints(keypoints_3d)
-            
-            print(f"  Phase 1b - Loaded {len(sam3d_joints)} joints from SAM-3D keypoints")
+            print(f"  Phase 1b - Loaded {len(sam3d_joints)} joints from SAM-3D keypoints (pelvis-centered)")
         else:
             sam3d_joints = self._extract_joint_positions(sam3d_mesh)
             print(f"  Phase 1b - Extracted {len(sam3d_joints)} joints from SAM-3D mesh slices")
@@ -1520,92 +1342,104 @@ class ANNYBodyAnalyzer:
             print(f"  Phase 4 - Final phenotypes: weight={best_params['weight']:.2f}, "
                   f"height={best_params['height']:.2f}, muscle={best_params['muscle']:.2f}")
 
-            # Save POSED ANNY mesh (should match SAM-3D pose) for visual comparison
-            # fitted_verts is the posed mesh from ParametersRegressor
-            posed_output = self._model(
-                pose_parameters=pose_params,
-                phenotype_kwargs=phenotype_kwargs,
-                pose_parameterization=self._model.default_pose_parameterization,
-                return_bone_ends=True,  # Get bone_heads for joint visualization
-            )
-            posed_verts_full = posed_output["vertices"][0].detach().cpu().numpy()
-
-            # Scale to user height for comparison
-            posed_height = posed_verts_full[:, 2].max() - posed_verts_full[:, 2].min()
-            if user_height_cm:
-                pose_scale = (user_height_cm / 100.0) / posed_height
-                posed_verts_scaled = posed_verts_full * pose_scale
-            else:
-                pose_scale = 1.0
-                posed_verts_scaled = posed_verts_full
-
-            anny_faces = self._model.get_triangular_faces().cpu().numpy()
-            posed_mesh = trimesh.Trimesh(
-                vertices=posed_verts_scaled, faces=anny_faces, process=False
-            )
-            posed_mesh.export(f"{save_debug_meshes}_anny_posed.ply")
-            print(f"  Saved posed ANNY mesh: debug_anny_posed.ply")
-
-            # Save REST ANNY mesh with body tilt applied (T-pose + root rotation only)
-            # This makes it easier to compare with SAM-3D which may be tilted
             from scipy.spatial.transform import Rotation as R
 
-            # Create pose params with ONLY root rotation (body lean), no limb rotations
-            bone_labels_rest = self._model.bone_labels
-            num_bones_rest = len(bone_labels_rest)
-            rest_pose_params = torch.eye(4, device=self.device, dtype=self.dtype).unsqueeze(0).unsqueeze(0)
-            rest_pose_params = rest_pose_params.repeat(1, num_bones_rest, 1, 1)  # [1, num_bones, 4, 4]
+            bone_labels_debug = self._model.bone_labels
+            num_bones_debug = len(bone_labels_debug)
+            anny_faces = self._model.get_triangular_faces().cpu().numpy()
 
-            # Apply only root rotation if present
-            if "root" in bone_rotations and "root" in bone_labels_rest:
+            # ===== STEP 1: Build pose parameters =====
+            # Start with identity (T-pose)
+            pose_params = torch.eye(4, device=self.device, dtype=self.dtype).unsqueeze(0).unsqueeze(0)
+            pose_params = pose_params.repeat(1, num_bones_debug, 1, 1)
+
+            # Apply root rotation first
+            if "root" in bone_rotations and "root" in bone_labels_debug:
                 root_rotvec = bone_rotations["root"]
                 if np.linalg.norm(root_rotvec) > 1e-6:
-                    root_idx = bone_labels_rest.index("root")
+                    root_idx = bone_labels_debug.index("root")
                     rot_mat = R.from_rotvec(root_rotvec).as_matrix()
                     homo_mat = np.eye(4)
                     homo_mat[:3, :3] = rot_mat
-                    rest_pose_params[0, root_idx] = torch.tensor(
-                        homo_mat, device=self.device, dtype=self.dtype
-                    )
-                    print(f"  Applied root rotation to rest mesh: {np.degrees(root_rotvec)} deg")
+                    pose_params[0, root_idx] = torch.tensor(homo_mat, device=self.device, dtype=self.dtype)
+                    print(f"  Applied root rotation: {np.degrees(root_rotvec)} deg")
 
-            rest_output_debug = self._model(
-                pose_parameters=rest_pose_params,
+            # ===== STEP 2: Generate REST mesh (root rotation only) =====
+            rest_output = self._model(
+                pose_parameters=pose_params,
                 phenotype_kwargs=phenotype_kwargs,
                 pose_parameterization="rest_relative",
+                return_bone_ends=True,
             )
-            rest_verts_debug = rest_output_debug["vertices"][0].detach().cpu().numpy()
+            rest_verts = rest_output["vertices"][0].detach().cpu().numpy()
+            rest_bone_heads = rest_output["bone_heads"][0].detach().cpu().numpy()
 
-            # Center rest mesh (same as we do for SAM-3D)
-            rest_center = rest_verts_debug.mean(axis=0)
-            rest_verts_debug -= rest_center
+            # Get pelvis position for centering (will use for both meshes)
+            root_idx = bone_labels_debug.index("root")
+            pelvis_pos = rest_bone_heads[root_idx].copy()
+            pelvis_pos[1] -= 0.08  # Y offset to align with SAM-3D
 
-            rest_verts_scaled = rest_verts_debug * pose_scale
+            # Center and scale
+            rest_verts -= pelvis_pos
+            rest_height = rest_verts[:, 2].max() - rest_verts[:, 2].min()
+            pose_scale = (user_height_cm / 100.0) / rest_height if user_height_cm else 1.0
+            rest_verts_scaled = rest_verts * pose_scale
 
-            rest_mesh = trimesh.Trimesh(
-                vertices=rest_verts_scaled, faces=anny_faces, process=False
-            )
+            # Save REST mesh
+            rest_mesh = trimesh.Trimesh(vertices=rest_verts_scaled, faces=anny_faces, process=False)
             rest_mesh.export(f"{save_debug_meshes}_anny_rest.ply")
-            print(f"  Saved rest ANNY mesh (with body tilt): debug_anny_rest.ply")
+            print(f"  Saved debug_anny_rest.ply (root rotation only)")
+
+            # ===== STEP 3: Add bone rotations for POSED mesh =====
+            print(f"  Adding bone rotations:")
+            for bone_name, rotvec in bone_rotations.items():
+                if bone_name == "root":
+                    continue  # Already applied
+                if bone_name in bone_labels_debug and np.linalg.norm(rotvec) > 1e-6:
+                    bone_idx = bone_labels_debug.index(bone_name)
+                    rot_mat = R.from_rotvec(rotvec).as_matrix()
+                    homo_mat = np.eye(4)
+                    homo_mat[:3, :3] = rot_mat
+                    pose_params[0, bone_idx] = torch.tensor(homo_mat, device=self.device, dtype=self.dtype)
+                    print(f"    {bone_name}: {np.degrees(rotvec)} deg")
+
+            # ===== STEP 4: Generate POSED mesh (root + bone rotations) =====
+            posed_output = self._model(
+                pose_parameters=pose_params,
+                phenotype_kwargs=phenotype_kwargs,
+                pose_parameterization="rest_relative",
+                return_bone_ends=True,
+            )
+            posed_verts = posed_output["vertices"][0].detach().cpu().numpy()
+
+            # Use SAME centering as rest mesh
+            posed_verts -= pelvis_pos
+            posed_verts_scaled = posed_verts * pose_scale
+
+            # Save POSED mesh
+            posed_mesh = trimesh.Trimesh(vertices=posed_verts_scaled, faces=anny_faces, process=False)
+            posed_mesh.export(f"{save_debug_meshes}_anny_posed.ply")
+            print(f"  Saved debug_anny_posed.ply (root + bone rotations)")
 
             # Save POSED joint positions for comparison with SAM-3D joints
             if "bone_heads" in posed_output:
                 posed_bone_heads = posed_output["bone_heads"][0].detach().cpu().numpy()
+                # Apply same centering as mesh (pelvis offset)
+                posed_bone_heads_centered = posed_bone_heads - pelvis_pos
                 # Scale to match user height
-                posed_bone_heads_scaled = posed_bone_heads * pose_scale
+                posed_bone_heads_scaled = posed_bone_heads_centered * pose_scale
                 # Convert to joint dict using bone labels
                 posed_joints = {}
                 bone_labels = self._model.bone_labels
                 # Map bone names to our joint names
-                # Map ANNY bones back to our joint names (matches joint_mapping in _get_anny_joint_positions)
                 bone_to_joint = {
-                    "upperarm01.L": "shoulder_l",  # shoulder = upper arm start
+                    "upperarm01.L": "shoulder_l",
                     "upperarm01.R": "shoulder_r",
                     "lowerarm01.L": "elbow_l",
                     "lowerarm01.R": "elbow_r",
                     "wrist.L": "wrist_l",
                     "wrist.R": "wrist_r",
-                    "upperleg01.L": "hip_l",  # hip = upper leg start
+                    "upperleg01.L": "hip_l",
                     "upperleg01.R": "hip_r",
                     "lowerleg01.L": "knee_l",
                     "lowerleg01.R": "knee_r",
@@ -1618,8 +1452,8 @@ class ANNYBodyAnalyzer:
                 for i, bone_name in enumerate(bone_labels):
                     if bone_name in bone_to_joint:
                         posed_joints[bone_to_joint[bone_name]] = posed_bone_heads_scaled[i]
-                # self._save_joints_debug(posed_joints, f"{save_debug_meshes}_anny_posed_joints.ply")
-                # print(f"  Saved posed ANNY joints: debug_anny_posed_joints.ply")
+                self._save_joints_debug(posed_joints, f"{save_debug_meshes}_anny_posed_joints.ply")
+                print(f"  Saved debug_anny_posed_joints.ply")
 
                 # Debug: Compare posed joints to SAM-3D target
                 # NOTE: SAM-3D uses opposite X convention (left = -X), so we flip X for comparison
