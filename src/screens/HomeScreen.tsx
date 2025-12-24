@@ -9,101 +9,92 @@ const HomeScreen = () => {
   };
 
   return (
-    <view className="flex-1 w-full pt-[60px] pb-10 px-5 App">
+    <view className="flex-1 w-full pt-[70px] pb-10 px-6 App">
       {/* Header */}
-      <view className="items-center mb-8">
-        <text className="text-[36px] font-bold text-gold mb-1 font-serif italic">
+      <view className="items-center mb-10">
+        <text className="text-[40px] font-bold text-foreground mb-2">
           Novia
         </text>
-        <text className="text-base text-muted-foreground text-center" style={{ lineHeight: '22px' }}>
-          Your joyful discovery starts here
-        </text>
+        {state.user && (
+          <text className="text-base text-muted-foreground">
+            Welcome back, {state.user.name?.split(' ')[0] || 'there'}
+          </text>
+        )}
       </view>
 
-      {/* Welcome Message */}
-      {state.user && (
-        <view className="mb-6">
-          <text className="text-lg text-foreground text-center">
-            Welcome back, {state.user.name?.split(' ')[0] || 'Love'} 💕
-          </text>
-        </view>
-      )}
-
       {/* Main CTA - Virtual Try-On */}
-      <novia-liquid-glass
-        glassStyle="clear"
-        tintColor="#FFFFFF"
-        tintAlpha={0.2}
-        cornerRadius={24}
-        addBorder={true}
+      <view
         bindtap={handleTryOnPress}
-        className="mb-5 p-6 w-full"
+        className="mb-6 p-6 w-full bg-card rounded-3xl"
+        style={{
+          boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05)',
+        }}
       >
-        <view className="w-full h-[180px] bg-blush rounded-xl mb-4 items-center justify-center">
-          <DressIcon size={64} color="#D4AF37" />
+        <view className="w-full h-[200px] bg-blush rounded-2xl mb-5 items-center justify-center">
+          <DressIcon size={72} color="#E6B88A" />
         </view>
 
-        <text className="text-xl font-semibold text-foreground mb-2">
-          Find Your "Yes" Dress
+        <text className="text-2xl font-semibold text-foreground mb-3">
+          Find Your Dream Dress
         </text>
 
-        <text className="text-sm text-muted-foreground mb-4" style={{ lineHeight: '20px' }}>
-          See yourself in stunning wedding dresses, effortlessly. Try on 50+ looks in minutes.
+        <text className="text-sm text-muted-foreground mb-6" style={{ lineHeight: '22px' }}>
+          See yourself in stunning wedding dresses. Try on dozens of looks in minutes.
         </text>
 
-        <view className="bg-gold py-3 px-6 rounded-xl items-center flex-row justify-center">
-          <HeartIcon size={18} color="#FFFFFF" />
-          <text className="text-white font-semibold text-base ml-2">
-            Start Your Joyful Discovery
+        <view className="bg-primary py-4 px-6 rounded-2xl items-center">
+          <text className="text-white font-semibold text-base">
+            Start Browsing
           </text>
         </view>
-      </novia-liquid-glass>
+      </view>
 
       {/* Stats/Social Proof */}
-      <view style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: '24px' }}>
-        <view style={{ display: 'flex', flexDirection: 'row' }}>
+      <view className="flex-row items-center justify-center mb-8">
+        <view className="flex-row mr-2">
           {[1, 2, 3, 4, 5].map((i) => (
-            <text key={i} className="text-gold">★</text>
+            <text key={i} style={{ fontSize: '14px', color: '#E6B88A' }}>★</text>
           ))}
         </view>
-        <text className="text-sm text-muted-foreground ml-2">
-          47 Dresses Tested. 1 Dream Found.
+        <text className="text-sm text-muted-foreground">
+          Loved by thousands of brides
         </text>
       </view>
 
       {/* Coming Soon Features */}
       <view className="mb-4">
-        <text className="text-xs text-gold font-bold tracking-widest uppercase mb-3 text-center">
+        <text className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-4">
           Coming Soon
         </text>
       </view>
 
-      <scroll-view scroll-x={true} className="flex-row w-full" style={{ gap: '12px' }}>
+      <scroll-view scroll-x={true} className="flex-row w-full" style={{ gap: '16px' }}>
         {[
           { icon: '✨', name: 'Veils' },
           { icon: '👑', name: 'Tiaras' },
           { icon: '💎', name: 'Jewelry' },
           { icon: '💐', name: 'Bouquets' },
         ].map((item) => (
-          <novia-liquid-glass
+          <view
             key={item.name}
-            glassStyle="clear"
-            cornerRadius={16}
-            addBorder={true}
-            className="w-[100px] p-4 items-center mr-3"
+            className="bg-card rounded-2xl p-5 items-center"
+            style={{
+              width: '110px',
+              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+            }}
           >
-            <text className="text-2xl mb-2">{item.icon}</text>
-            <text className="text-xs font-semibold text-foreground">
+            <text style={{ fontSize: '32px', marginBottom: '8px' }}>{item.icon}</text>
+            <text className="text-xs font-medium text-foreground">
               {item.name}
             </text>
-          </novia-liquid-glass>
+          </view>
         ))}
       </scroll-view>
 
       {/* Privacy Note */}
-      <view className="mt-6 items-center">
+      <view className="mt-8 items-center">
         <text className="text-xs text-muted-foreground text-center">
-          🔒 Your photos are strictly private and never shared
+          Your photos are private and secure
         </text>
       </view>
     </view>

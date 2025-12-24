@@ -59,31 +59,24 @@ const LoginScreen = () => {
   return (
     <view className="flex-1 w-full items-center justify-center px-8">
       {/* Logo/Branding */}
-      <view className="items-center mb-12">
-        <view className="w-[100px] h-[100px] rounded-full bg-blush items-center justify-center mb-6">
-          <HeartIcon size={48} color="#D4AF37" />
+      <view className="items-center mb-16">
+        <view className="w-[100px] h-[100px] rounded-full bg-blush items-center justify-center mb-8">
+          <HeartIcon size={52} color="#E6B88A" />
         </view>
-        <text className="text-[36px] font-bold text-gold mb-2">
+        <text className="text-[44px] font-bold text-foreground mb-3">
           Novia
         </text>
-        <text className="text-base text-muted-foreground text-center" style={{ lineHeight: '22px' }}>
-          Your wedding vision, brought to life
+        <text className="text-base text-muted-foreground text-center" style={{ lineHeight: '24px' }}>
+          Your wedding vision, beautifully realized
         </text>
       </view>
 
       {/* Sign In Section */}
-      <novia-liquid-glass
-        glassStyle="clear"
-        tintColor="#FFFFFF"
-        tintAlpha={0.2}
-        cornerRadius={24}
-        addBorder={true}
-        className="w-full items-center p-6"
-      >
+      <view className="w-full items-center">
         {/* Sign in with Apple Button */}
         <view
           bindtap={isLoading ? undefined : handleSignInWithApple}
-          className="w-full bg-black py-4 px-6 rounded-xl flex flex-row items-center justify-center mb-4"
+          className="w-full bg-foreground py-4 px-6 rounded-2xl flex flex-row items-center justify-center mb-4"
           style={{ opacity: isLoading ? 0.6 : 1 }}
         >
           {/* Apple Logo */}
@@ -99,17 +92,17 @@ const LoginScreen = () => {
 
         {/* Error Message */}
         {error && (
-          <view className="w-full bg-rose/20 py-3 px-4 rounded-lg">
-            <text className="text-rose text-sm text-center">
+          <view className="w-full bg-rose py-3 px-4 rounded-2xl mb-4">
+            <text className="text-white text-sm text-center">
               {error}
             </text>
           </view>
         )}
-      </novia-liquid-glass>
+      </view>
 
       {/* Terms */}
-      <view className="absolute bottom-10 left-8 right-8">
-        <text className="text-muted-foreground text-xs text-center" style={{ lineHeight: '18px' }}>
+      <view className="absolute bottom-12 left-8 right-8">
+        <text className="text-muted-foreground text-xs text-center" style={{ lineHeight: '20px' }}>
           By continuing, you agree to our Terms of Service and Privacy Policy
         </text>
       </view>

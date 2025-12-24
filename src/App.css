@@ -3,28 +3,37 @@
 @tailwind utilities;
 
 :root {
-  background-color: #FFFFF0;
-  --color-background: linear-gradient(135deg, #F5E6D3 0%, #F0C8C8 100%);
-  /* Champagne to Rose */
-  /* Alternative warmer gradient */
-  /* --color-background: linear-gradient(to bottom right, #FFF5F5, #FFF0F5, #F5F5F5); */
-  --color-foreground: #2D2D2D;
+  background-color: #FDFCFB;
+  /* Light, airy Apple-inspired design system */
+  --color-background: linear-gradient(to bottom, #FDFCFB 0%, #FFF9F6 100%);
+  --color-foreground: #1C1C1E;
   --color-card: #FFFFFF;
-  --color-card-foreground: #2D2D2D;
-  --color-primary: #D4AF37;
+  --color-card-foreground: #1C1C1E;
+  --color-primary: #E6B88A;
+  /* Softer gold/peach */
   --color-primary-foreground: #FFFFFF;
-  --color-secondary: #F8E8E8;
-  --color-secondary-foreground: #2D2D2D;
-  --color-muted: #F5F5F5;
-  --color-muted-foreground: #737373;
-  --color-accent: #E8B4B8;
-  --color-accent-foreground: #2D2D2D;
-  --color-border: #E5E5E5;
-  --color-text: #2D2D2D;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --color-secondary: #F7F2EE;
+  /* Very light warm gray */
+  --color-secondary-foreground: #1C1C1E;
+  --color-muted: #F5F5F7;
+  /* Apple-style light gray */
+  --color-muted-foreground: #86868B;
+  /* Apple gray */
+  --color-accent: #F4D9D0;
+  /* Soft peachy accent */
+  --color-accent-foreground: #1C1C1E;
+  --color-border: #E5E5EA;
+  /* Very subtle border */
+  --color-text: #1C1C1E;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  /* Apple card shadow - subtle, layered */
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.06), 0 8px 10px -6px rgb(0 0 0 / 0.06);
 }
 
 .App {

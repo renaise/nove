@@ -84,35 +84,38 @@ const TryOnScreen = () => {
       </view>
 
       {/* Header */}
-      <view className="absolute top-0 left-0 right-0 flex-row items-center justify-between pt-[60px] px-5">
+      <view className="absolute top-0 left-0 right-0 flex-row items-center justify-between pt-[60px] px-6">
         <view
           bindtap={handleBackPress}
           className="w-10 h-10 rounded-full items-center justify-center"
-          style={{ backgroundColor: 'rgba(255,255,255,0.9)' }}
+          style={{
+            backgroundColor: 'rgba(255,255,255,0.95)',
+            boxShadow: '0 2px 4px rgb(0 0 0 / 0.1)',
+          }}
         >
-          <BackIcon size={24} color="#2D2D2D" />
+          <BackIcon size={24} color="#1C1C1E" />
         </view>
         <view
           bindtap={handleFavoriteToggle}
           className="w-10 h-10 rounded-full items-center justify-center"
-          style={{ backgroundColor: isFavorite ? '#D4AF37' : 'rgba(255,255,255,0.9)' }}
+          style={{
+            backgroundColor: isFavorite ? '#E6B88A' : 'rgba(255,255,255,0.95)',
+            boxShadow: '0 2px 4px rgb(0 0 0 / 0.1)',
+          }}
         >
-          <HeartIcon size={20} color={isFavorite ? '#FFFFFF' : '#D4AF37'} />
+          <HeartIcon size={19} color={isFavorite ? '#FFFFFF' : '#E6B88A'} />
         </view>
       </view>
 
       {/* Bottom Content */}
-      <view className="absolute bottom-0 left-0 right-0 px-5 pb-10">
+      <view className="absolute bottom-0 left-0 right-0 px-6 pb-10">
         {/* Dress Info */}
         <view className="mb-6">
-          <text className="text-3xl font-bold text-white mb-1">
+          <text className="text-3xl font-bold text-white mb-2">
             {selectedDress.name}
           </text>
           <view className="flex-row items-center">
-            <text className="text-base text-white/80 capitalize mr-3">
-              {selectedDress.category}
-            </text>
-            <text className="text-xl font-bold text-gold">
+            <text className="text-2xl font-semibold" style={{ color: '#E6B88A' }}>
               {selectedDress.price}
             </text>
           </view>
@@ -120,15 +123,13 @@ const TryOnScreen = () => {
 
         {/* Your Photo Preview */}
         {state.selectedPhoto && (
-          <novia-liquid-glass
-            glassStyle="regular"
-            tintColor="#FFFFFF"
-            tintAlpha={0.2}
-            cornerRadius={16}
-            addBorder={false}
-            className="flex-row items-center p-3 mb-4"
+          <view
+            className="flex-row items-center p-4 mb-5 bg-card rounded-2xl"
+            style={{
+              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+            }}
           >
-            <view className="w-14 h-14 rounded-xl overflow-hidden mr-3">
+            <view className="w-14 h-14 rounded-xl overflow-hidden mr-4">
               <image
                 src={state.selectedPhoto}
                 className="w-full h-full"
@@ -136,44 +137,41 @@ const TryOnScreen = () => {
               />
             </view>
             <view className="flex-1">
-              <text className="text-sm font-semibold text-white">
-                Your silhouette photo
+              <text className="text-sm font-semibold text-foreground">
+                Your photo
               </text>
-              <text className="text-xs text-white/70">
-                Ready for virtual try-on
+              <text className="text-xs text-muted-foreground">
+                Ready for try-on
               </text>
             </view>
-            <view className="w-3 h-3 rounded-full bg-green-400" />
-          </novia-liquid-glass>
+            <view className="w-2 h-2 rounded-full" style={{ backgroundColor: '#34C759' }} />
+          </view>
         )}
 
         {/* Generate Button */}
         <view
           bindtap={isGenerating ? undefined : handleGenerateTryOn}
-          className="py-4 rounded-2xl items-center flex-row justify-center"
+          className="py-5 rounded-2xl items-center"
           style={{
-            backgroundColor: isGenerating ? '#E5E5E5' : '#D4AF37',
+            backgroundColor: isGenerating ? '#E5E5EA' : '#E6B88A',
             opacity: isGenerating ? 0.8 : 1,
           }}
         >
           {isGenerating ? (
             <text className="text-muted-foreground font-semibold text-lg">
-              Creating your moment...
+              Creating your look...
             </text>
           ) : (
-            <>
-              <HeartIcon size={20} color="#FFFFFF" />
-              <text className="text-white font-semibold text-lg ml-2">
-                Try This Dress On Me
-              </text>
-            </>
+            <text className="text-white font-semibold text-lg">
+              Try This Dress
+            </text>
           )}
         </view>
 
         {/* Privacy Note */}
-        <view className="mt-4 items-center">
-          <text className="text-xs text-white/60 text-center">
-            Your photos are processed securely and never shared
+        <view className="mt-5 items-center">
+          <text className="text-xs text-white" style={{ opacity: 0.7 }}>
+            Your photos are private and secure
           </text>
         </view>
       </view>

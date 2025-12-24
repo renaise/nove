@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Wedding-themed colors
+        // Apple-inspired design tokens
         background: 'var(--color-background)',
         foreground: 'var(--color-foreground)',
         card: 'var(--color-card)',
@@ -22,21 +22,32 @@ export default {
         accent: 'var(--color-accent)',
         'accent-foreground': 'var(--color-accent-foreground)',
         border: 'var(--color-border)',
-        // Wedding-specific colors
-        blush: '#F8E8E8',
-        champagne: '#F7E7CE',
-        ivory: '#FFFFF0',
-        gold: '#D4AF37',
-        rose: '#E8B4B8',
+        // Soft wedding colors
+        blush: '#FAF0ED',
+        champagne: '#F9F2E9',
+        ivory: '#FDFCFB',
+        gold: '#E6B88A',
+        rose: '#F4D9D0',
       },
       borderRadius: {
         lg: 'var(--radius-lg)',
         md: 'var(--radius-md)',
         sm: 'var(--radius-sm)',
         xl: 'var(--radius-xl)',
+        '2xl': '24px',
+        '3xl': '28px',
       },
       boxShadow: {
-        xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        xs: 'var(--shadow-sm)',
+        sm: 'var(--shadow-sm)',
+        DEFAULT: 'var(--shadow-md)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
+        xl: 'var(--shadow-xl)',
+      },
+      spacing: {
+        18: '4.5rem',
+        22: '5.5rem',
       },
     },
   },
