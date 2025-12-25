@@ -64,7 +64,7 @@ const LoginScreen = () => {
           <HeartIcon size={52} color="#E6B88A" />
         </view>
         <text className="text-[44px] font-bold text-foreground mb-3">
-          Novia
+          Nove
         </text>
         <text className="text-base text-muted-foreground text-center" style={{ lineHeight: '24px' }}>
           Your wedding vision, beautifully realized

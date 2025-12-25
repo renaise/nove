@@ -13,7 +13,7 @@ const HomeScreen = () => {
       {/* Header */}
       <view className="items-center mb-10">
         <text className="text-[40px] font-bold text-foreground mb-2">
-          Novia
+          Nove
         </text>
         {state.user && (
           <text className="text-base text-muted-foreground">
