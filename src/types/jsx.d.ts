@@ -9,11 +9,13 @@ import {
   NoviaVideoErrorEvent,
 } from './native-modules';
 
-// Extend CSSProperties to include Lynx list-specific styles
+// Extend CSSProperties to include Lynx list-specific styles and SVG dimensions
 declare module '@lynx-js/types' {
   interface CSSProperties {
     listMainAxisGap?: string;
     listCrossAxisGap?: string;
+    width?: string;
+    height?: string;
   }
 }
 

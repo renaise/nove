@@ -104,25 +104,18 @@ const OnboardingPhotoScreen = () => {
       </text>
 
       {/* Photo Options */}
-      <novia-liquid-glass
-        glassStyle="clear"
-        tintColor="#FFFFFF"
-        tintAlpha={0.2}
-        cornerRadius={24}
-        addBorder={true}
-        className="p-6 mb-6"
-      >
+      <view style={{ gap: '12px', marginBottom: '24px' }}>
         {/* Gallery Option */}
         <view
           bindtap={isLoading ? undefined : handleGalleryPick}
-          className="flex-row items-center py-4 px-4 rounded-xl mb-3"
+          className="flex-row items-center py-5 px-5 rounded-2xl bg-card"
           style={{
-            backgroundColor: '#F8E8E8',
             opacity: isLoading ? 0.6 : 1,
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
           }}
         >
-          <view className="w-12 h-12 rounded-full bg-gold items-center justify-center mr-4">
-            <GalleryIcon size={24} color="#FFFFFF" />
+          <view className="w-14 h-14 rounded-2xl bg-primary items-center justify-center mr-4">
+            <GalleryIcon size={26} color="#FFFFFF" />
           </view>
           <view className="flex-1">
             <text className="text-base font-semibold text-foreground mb-1">
@@ -137,14 +130,14 @@ const OnboardingPhotoScreen = () => {
         {/* Camera Option */}
         <view
           bindtap={isLoading ? undefined : handleCameraCapture}
-          className="flex-row items-center py-4 px-4 rounded-xl"
+          className="flex-row items-center py-5 px-5 rounded-2xl bg-card"
           style={{
-            backgroundColor: '#F7E7CE',
             opacity: isLoading ? 0.6 : 1,
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
           }}
         >
-          <view className="w-12 h-12 rounded-full bg-gold items-center justify-center mr-4">
-            <CameraIcon size={24} color="#FFFFFF" />
+          <view className="w-14 h-14 rounded-2xl bg-primary items-center justify-center mr-4">
+            <CameraIcon size={26} color="#FFFFFF" />
           </view>
           <view className="flex-1">
             <text className="text-base font-semibold text-foreground mb-1">
@@ -155,12 +148,12 @@ const OnboardingPhotoScreen = () => {
             </text>
           </view>
         </view>
-      </novia-liquid-glass>
+      </view>
 
       {/* Error Message */}
       {error && (
-        <view className="bg-rose/20 py-3 px-4 rounded-lg mb-4">
-          <text className="text-rose text-sm text-center">{error}</text>
+        <view className="bg-rose py-4 px-4 rounded-2xl mb-4">
+          <text className="text-white text-sm text-center">{error}</text>
         </view>
       )}
 
@@ -174,31 +167,24 @@ const OnboardingPhotoScreen = () => {
       {/* Tips */}
       <view className="flex-1" />
 
-      <novia-liquid-glass
-        glassStyle="clear"
-        tintColor="#D4AF37"
-        tintAlpha={0.05}
-        cornerRadius={16}
-        addBorder={false}
-        className="p-4 mb-4"
-      >
-        <text className="text-sm font-semibold text-gold mb-2 text-center">
+      <view className="bg-secondary p-5 mb-4 rounded-2xl">
+        <text className="text-sm font-semibold text-primary mb-3 text-center">
           Tips for the best results
         </text>
         <text
-          className="text-xs text-muted-foreground text-center"
-          style={{ lineHeight: '18px' }}
+          className="text-sm text-muted-foreground text-center"
+          style={{ lineHeight: '22px' }}
         >
           • Wear fitted clothing (activewear works great){'\n'}
           • Stand in good lighting{'\n'}
           • Face the camera straight on
         </text>
-      </novia-liquid-glass>
+      </view>
 
       {/* Privacy Note */}
       <view className="items-center">
         <text className="text-xs text-muted-foreground text-center">
-          🔒 Your photos are strictly private and never shared
+          Your photos are private and secure
         </text>
       </view>
     </view>

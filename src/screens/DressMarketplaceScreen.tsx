@@ -153,44 +153,35 @@ const DressMarketplaceScreen = () => {
       : DRESSES.filter((d) => d.category === selectedCategory);
 
   return (
-    <view className="flex-1 w-full bg-ivory">
+    <view className="flex-1 w-full App">
       {/* Header */}
-      <novia-liquid-glass
-        glassStyle="clear"
-        tintColor="#FFFFFF"
-        tintAlpha={0.8}
-        addBorder={false}
-        className="pt-[60px] pb-3 px-5"
-      >
-        <view className="flex-row items-center mb-4">
-          <view bindtap={handleBackPress} className="p-2 mr-2">
-            <BackIcon size={24} color="#2D2D2D" />
+      <view className="pt-[60px] pb-4 px-6 bg-card">
+        <view className="flex-row items-center mb-5">
+          <view bindtap={handleBackPress} className="p-2 mr-2" style={{ marginLeft: '-8px' }}>
+            <BackIcon size={24} color="#1C1C1E" />
           </view>
           <view className="flex-1">
-            <text className="text-2xl font-bold text-foreground">
-              Wedding Dresses
-            </text>
-            <text className="text-sm text-muted-foreground">
-              {filteredDresses.length} styles to discover
+            <text className="text-3xl font-bold text-foreground">
+              Dresses
             </text>
           </view>
         </view>
 
         {/* Category Filters */}
-        <scroll-view scroll-x={true} className="flex-row" style={{ marginLeft: '-20px', marginRight: '-20px', paddingLeft: '20px', paddingRight: '20px' }}>
+        <scroll-view scroll-x={true} className="flex-row" style={{ marginLeft: '-24px', marginRight: '-24px', paddingLeft: '24px', paddingRight: '24px' }}>
           {CATEGORIES.map((category) => (
             <view
               key={category.id}
               bindtap={() => handleCategorySelect(category.id)}
               className="mr-2 px-4 py-2 rounded-full"
               style={{
-                backgroundColor: selectedCategory === category.id ? '#D4AF37' : '#F8E8E8',
+                backgroundColor: selectedCategory === category.id ? '#E6B88A' : '#F7F2EE',
               }}
             >
               <text
                 className="text-sm font-medium"
                 style={{
-                  color: selectedCategory === category.id ? '#FFFFFF' : '#2D2D2D',
+                  color: selectedCategory === category.id ? '#FFFFFF' : '#1C1C1E',
                 }}
               >
                 {category.name}
@@ -198,7 +189,7 @@ const DressMarketplaceScreen = () => {
             </view>
           ))}
         </scroll-view>
-      </novia-liquid-glass>
+      </view>
 
       {/* Dress Grid - Waterfall Layout */}
       <list
@@ -225,7 +216,10 @@ const DressMarketplaceScreen = () => {
           >
             <view
               bindtap={() => handleDressSelect(dress.id)}
-              className="bg-white rounded-2xl overflow-hidden"
+              className="bg-card rounded-2xl overflow-hidden"
+              style={{
+                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+              }}
             >
               {/* Dress Image */}
               <view
@@ -240,30 +234,28 @@ const DressMarketplaceScreen = () => {
                 {/* Favorite Button */}
                 <view
                   bindtap={(e: any) => handleFavoriteToggle(dress.id, e)}
-                  className="absolute top-2 right-2 w-9 h-9 rounded-full items-center justify-center"
+                  className="absolute top-3 right-3 w-9 h-9 rounded-full items-center justify-center"
                   style={{
-                    backgroundColor: favorites.has(dress.id) ? '#D4AF37' : 'rgba(255,255,255,0.9)',
+                    backgroundColor: favorites.has(dress.id) ? '#E6B88A' : 'rgba(255,255,255,0.95)',
+                    boxShadow: '0 2px 4px rgb(0 0 0 / 0.1)',
                   }}
                 >
                   <HeartIcon
-                    size={18}
-                    color={favorites.has(dress.id) ? '#FFFFFF' : '#D4AF37'}
+                    size={17}
+                    color={favorites.has(dress.id) ? '#FFFFFF' : '#E6B88A'}
                   />
                 </view>
               </view>
 
               {/* Dress Info */}
-              <view className="p-3">
+              <view className="p-4">
                 <text
                   className="text-sm font-semibold text-foreground mb-1"
-                  style={{ lineHeight: '18px' }}
+                  style={{ lineHeight: '20px' }}
                 >
                   {dress.name}
                 </text>
-                <text className="text-xs text-muted-foreground capitalize">
-                  {dress.category}
-                </text>
-                <text className="text-sm font-bold text-gold mt-1">
+                <text className="text-sm font-medium" style={{ color: '#E6B88A' }}>
                   {dress.price}
                 </text>
               </view>
@@ -274,16 +266,14 @@ const DressMarketplaceScreen = () => {
 
       {/* Selected Photo Indicator */}
       {state.selectedPhoto && (
-        <view className="absolute bottom-6 left-5 right-5">
-          <novia-liquid-glass
-            glassStyle="regular"
-            tintColor="#D4AF37"
-            tintAlpha={0.9}
-            cornerRadius={16}
-            addBorder={false}
-            className="flex-row items-center p-3"
+        <view className="absolute bottom-8 left-6 right-6">
+          <view
+            className="bg-primary flex-row items-center p-4 rounded-2xl"
+            style={{
+              boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+            }}
           >
-            <view className="w-12 h-12 rounded-lg overflow-hidden mr-3">
+            <view className="w-12 h-12 rounded-xl overflow-hidden mr-3">
               <image
                 src={state.selectedPhoto}
                 className="w-full h-full"
@@ -294,11 +284,11 @@ const DressMarketplaceScreen = () => {
               <text className="text-sm font-semibold text-white">
                 Your photo is ready
               </text>
-              <text className="text-xs text-white/80">
+              <text className="text-xs text-white" style={{ opacity: 0.9 }}>
                 Tap any dress to try it on
               </text>
             </view>
-          </novia-liquid-glass>
+          </view>
         </view>
       )}
     </view>

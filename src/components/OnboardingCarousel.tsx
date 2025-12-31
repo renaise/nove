@@ -151,27 +151,25 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
               bindtap={() => setShowTooltip(!showTooltip)}
               className="py-2 px-4"
             >
-              <text className="text-gold text-sm font-semibold">
+              <text className="text-primary text-sm font-semibold">
                 {currentSlide.tooltip.trigger}
               </text>
             </view>
 
             {showTooltip && (
-              <novia-liquid-glass
-                glassStyle="clear"
-                tintColor="#D4AF37"
-                tintAlpha={0.1}
-                cornerRadius={12}
-                addBorder={true}
-                className="p-4 mx-4 mt-2"
+              <view
+                className="p-4 mx-4 mt-2 bg-secondary rounded-2xl"
+                style={{
+                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+                }}
               >
                 <text
                   className="text-sm text-foreground text-center"
-                  style={{ lineHeight: '20px' }}
+                  style={{ lineHeight: '22px' }}
                 >
                   {currentSlide.tooltip.content}
                 </text>
-              </novia-liquid-glass>
+              </view>
             )}
           </view>
         )}
@@ -195,10 +193,10 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
           >
             <view
               style={{
-                width: currentIndex === 0 ? '24px' : '8px',
+                width: currentIndex === 0 ? '28px' : '8px',
                 height: '8px',
                 borderRadius: '4px',
-                backgroundColor: currentIndex === 0 ? '#D4AF37' : '#E5E5E5',
+                backgroundColor: currentIndex === 0 ? '#E6B88A' : '#E5E5EA',
               }}
             />
           </view>
@@ -208,10 +206,10 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
           >
             <view
               style={{
-                width: currentIndex === 1 ? '24px' : '8px',
+                width: currentIndex === 1 ? '28px' : '8px',
                 height: '8px',
                 borderRadius: '4px',
-                backgroundColor: currentIndex === 1 ? '#D4AF37' : '#E5E5E5',
+                backgroundColor: currentIndex === 1 ? '#E6B88A' : '#E5E5EA',
               }}
             />
           </view>
@@ -221,10 +219,10 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
           >
             <view
               style={{
-                width: currentIndex === 2 ? '24px' : '8px',
+                width: currentIndex === 2 ? '28px' : '8px',
                 height: '8px',
                 borderRadius: '4px',
-                backgroundColor: currentIndex === 2 ? '#D4AF37' : '#E5E5E5',
+                backgroundColor: currentIndex === 2 ? '#E6B88A' : '#E5E5EA',
               }}
             />
           </view>
@@ -234,10 +232,10 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
           >
             <view
               style={{
-                width: currentIndex === 3 ? '24px' : '8px',
+                width: currentIndex === 3 ? '28px' : '8px',
                 height: '8px',
                 borderRadius: '4px',
-                backgroundColor: currentIndex === 3 ? '#D4AF37' : '#E5E5E5',
+                backgroundColor: currentIndex === 3 ? '#E6B88A' : '#E5E5EA',
               }}
             />
           </view>
@@ -250,9 +248,9 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
         {currentIndex > 0 ? (
           <view
             bindtap={handlePrev}
-            className="flex-1 py-4 rounded-xl items-center border border-champagne"
+            className="flex-1 py-4 rounded-2xl items-center bg-secondary"
           >
-            <text className="text-muted-foreground font-semibold text-base">Back</text>
+            <text className="text-foreground font-semibold text-base">Back</text>
           </view>
         ) : (
           <view className="flex-1" />
@@ -261,7 +259,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
         {/* Next/Complete Button */}
         <view
           bindtap={handleNext}
-          className="flex-1 bg-gold py-4 rounded-xl items-center"
+          className="flex-1 bg-primary py-4 rounded-2xl items-center"
         >
           <text className="text-white font-semibold text-base">
             {isLastSlide ? (currentSlide.ctaText || "Let's Begin") : 'Next'}
