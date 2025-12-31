@@ -15,6 +15,11 @@ ios/Novia/Pods/
 ios/Novia/Novia.xcworkspace/xcuserdata/
 ios/Novia/Novia.xcodeproj/xcuserdata/
 ios/Novia/Novia.xcodeproj/project.xcworkspace/xcuserdata/
+ios/Nove/Pods/
+ios/Nove/Nove.xcworkspace/xcuserdata/
+ios/Nove/Nove.xcodeproj/xcuserdata/
+ios/Nove/Nove.xcodeproj/project.xcworkspace/xcuserdata/
+ios/Nove/Nove/LynxResources.bundle/
 *.xcuserstate
 DerivedData/
 *.ipa
