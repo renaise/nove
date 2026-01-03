@@ -113,7 +113,7 @@ export default function NoveLanding() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           {/* Header */}
           <div className="text-center mb-12">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-black/50 mb-4 font-thin">Browse</p>
+            <p className="text-[10px] uppercase tracking-[0.15em] text-black/50 mb-3 font-thin">Browse</p>
             <h2 className="text-3xl md:text-4xl font-thin tracking-tight mb-4 text-black">
               Find Your Dream Dress
             </h2>
