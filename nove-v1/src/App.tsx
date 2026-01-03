@@ -93,12 +93,10 @@ export default function NoveLanding() {
 
         {/* Content at Bottom */}
         <div className="relative z-10 text-center px-6 max-w-2xl mx-auto mb-16 md:mb-24">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-normal leading-tight mb-6 tracking-[-0.02em] text-[#FAFAFA]">
-            Confidence in every choice.
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[#FAFAFA]/60 mb-2 font-normal">Nove</p>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-normal leading-snug mb-4 tracking-[-0.02em] text-[#FAFAFA]">
+            See the moment before it happens.
           </h1>
-          <p className="text-sm md:text-base text-[#FAFAFA]/70 leading-relaxed mb-8 max-w-lg mx-auto">
-            Your wedding dress is a tradition, not a guess. We built Nove as a simple tool to help you see exactly how different styles look on you—before you ever step foot in a store. It is a private way to explore your options and find the silhouette that feels right.
-          </p>
           <div className="flex flex-row gap-4 justify-center items-center">
             <button className="px-4 py-1.5 border border-[#FAFAFA] bg-transparent text-[#FAFAFA] text-[10px] uppercase tracking-[0.12em] hover:bg-[#FAFAFA] hover:text-black transition-all">
               Start Trying on
@@ -125,11 +123,11 @@ export default function NoveLanding() {
           </div>
 
           {/* Filters */}
-          <div className="flex flex-wrap gap-3 justify-center mb-10">
+          <div className="flex flex-wrap gap-2 justify-center mb-4">
             {['All', 'A-Line', 'Ballgown', 'Mermaid', 'Sheath', 'Fit & Flare'].map((filter, i) => (
               <button
                 key={filter}
-                className={`px-5 py-2 text-xs uppercase tracking-[0.1em] border transition-all ${
+                className={`px-4 py-1.5 text-[10px] uppercase tracking-[0.1em] border transition-all ${
                   i === 0
                     ? 'bg-black text-white border-black'
                     : 'bg-transparent text-black/50 border-black/20 hover:border-black hover:text-black'
@@ -141,11 +139,11 @@ export default function NoveLanding() {
           </div>
 
           {/* Price Range */}
-          <div className="flex flex-wrap gap-3 justify-center mb-12">
+          <div className="flex flex-wrap gap-2 justify-center mb-10">
             {['Under $1,000', '$1,000 - $2,500', '$2,500 - $5,000', '$5,000+'].map((price) => (
               <button
                 key={price}
-                className="px-4 py-1.5 text-xs text-black/50 border border-black/20 hover:border-black hover:text-black transition-all"
+                className="px-3 py-1 text-[10px] text-black/50 border border-black/20 hover:border-black hover:text-black transition-all"
               >
                 {price}
               </button>
@@ -224,16 +222,64 @@ export default function NoveLanding() {
 
       {/* --- ABOUT SECTION --- */}
       <section className="py-24 bg-white">
-        <div className="max-w-3xl mx-auto px-6 lg:px-12 text-center">
-          <p className="text-xs uppercase tracking-[0.3em] text-black/50 mb-4">About</p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal tracking-[-0.02em] mb-6 text-black">
-            Privacy First, Always
-          </h2>
-          <p className="text-lg text-black/50 leading-relaxed mb-8">
-            Your photos are encrypted, processed securely, and never shared. We believe your wedding journey should be joyful, stress-free, and completely private.
-          </p>
-          <div className="inline-block px-6 py-2 bg-black/5 text-sm text-black/50">
-            Strictly Private • AI-Powered • Boutique Connected
+        <div className="max-w-5xl mx-auto px-6 lg:px-12">
+          {/* Text */}
+          <div className="text-center mb-16">
+            <p className="text-xs uppercase tracking-[0.3em] text-black/50 mb-4">About</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal tracking-[-0.02em] mb-6 text-black">
+              Confidence in every choice.
+            </h2>
+            <p className="text-lg text-black/50 leading-relaxed max-w-2xl mx-auto">
+              Your wedding dress is a tradition, not a guess. We built Nove as a simple tool to help you see exactly how different styles look on you—before you ever step foot in a store. It is a private way to explore your options and find the silhouette that feels right.
+            </p>
+          </div>
+
+          {/* Prototype Preview */}
+          <div className="relative">
+            {/* Browser Frame */}
+            <div className="bg-black/5 rounded-lg overflow-hidden">
+              {/* Browser Bar */}
+              <div className="flex items-center gap-2 px-4 py-3 bg-black/5 border-b border-black/10">
+                <div className="flex gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-black/20" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-black/20" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-black/20" />
+                </div>
+                <div className="flex-1 mx-4">
+                  <div className="bg-white rounded px-3 py-1 text-[10px] text-black/40 text-center">
+                    nove.app/try-on
+                  </div>
+                </div>
+              </div>
+              {/* Preview Content */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-6 md:p-8">
+                {/* Before */}
+                <div className="aspect-[3/4] bg-black/10 rounded flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-black/20 flex items-center justify-center">
+                      <span className="text-black/40 text-lg">+</span>
+                    </div>
+                    <p className="text-[10px] uppercase tracking-wider text-black/40">Your Photo</p>
+                  </div>
+                </div>
+                {/* Arrow */}
+                <div className="hidden md:flex items-center justify-center">
+                  <div className="text-2xl text-black/20">→</div>
+                </div>
+                {/* After */}
+                <div className="aspect-[3/4] bg-black/10 rounded overflow-hidden relative">
+                  <img
+                    src="https://cdn.stillwhite.com/assets/fc/86/5e/fc865e214f1d11ef8aca02ffec65b5dd/650x.jpg"
+                    alt="Try-on result"
+                    className="w-full h-full object-cover opacity-80"
+                  />
+                  <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-sm rounded px-3 py-2">
+                    <p className="text-[10px] uppercase tracking-wider text-black/60">Virtual Try-On</p>
+                    <p className="text-xs text-black">Danielle Frankel · Eloise</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
