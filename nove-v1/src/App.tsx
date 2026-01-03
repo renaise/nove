@@ -83,7 +83,7 @@ export default function NoveLanding() {
         {/* Full Viewport Background Image */}
         <div className="absolute inset-0">
           <img
-            src="/hero-bride.png"
+            src="/hero-bride.jpg"
             alt="Bride in wedding dress"
             className="w-full h-full object-cover"
           />
