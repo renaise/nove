@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@300&display=swap');
 @source "../index.html";
 @source "./**/*.{js,ts,jsx,tsx}";
 
@@ -7,12 +7,14 @@
 body {
   background: #F5F5F5;
   margin: 0;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Cormorant', Georgia, serif;
   font-weight: 300;
+  letter-spacing: -0.02em;
 }
 
 * {
   font-weight: 300 !important;
+  letter-spacing: -0.02em !important;
 }
 
 /* Hide Scrollbar for Chrome/Safari/Opera */
