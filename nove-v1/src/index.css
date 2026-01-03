@@ -18,6 +18,10 @@ body {
   font-weight: 300;
 }
 
+* {
+  font-weight: 300 !important;
+}
+
 /* Hide Scrollbar for Chrome/Safari/Opera */
 .custom-scrollbar::-webkit-scrollbar {
   display: none;

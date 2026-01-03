@@ -114,7 +114,7 @@ export default function NoveLanding() {
           {/* Header */}
           <div className="text-center mb-12">
             <p className="text-[10px] uppercase tracking-[0.3em] text-black/50 mb-4 font-thin">Browse</p>
-            <h2 className="text-3xl md:text-4xl font-light tracking-tight mb-4 text-black">
+            <h2 className="text-3xl md:text-4xl font-thin tracking-tight mb-4 text-black">
               Find Your Dream Dress
             </h2>
             <p className="text-black/50 max-w-xl mx-auto">
@@ -208,7 +208,7 @@ export default function NoveLanding() {
       <section className="py-24 bg-black">
         <div className="max-w-3xl mx-auto px-6 lg:px-12 text-center">
           <p className="text-xs uppercase tracking-[0.3em] text-[#FAFAFA]/50 mb-4">for Boutiques</p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight mb-6 text-[#FAFAFA]">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-thin tracking-tight mb-6 text-[#FAFAFA]">
             Empower Your Brides
           </h2>
           <p className="text-lg text-[#FAFAFA]/50 leading-relaxed mb-10">
@@ -224,7 +224,7 @@ export default function NoveLanding() {
       <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6 lg:px-12 text-center">
           <p className="text-xs uppercase tracking-[0.3em] text-black/50 mb-4">About</p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight mb-6 text-black">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-thin tracking-tight mb-6 text-black">
             Privacy First, Always
           </h2>
           <p className="text-lg text-black/50 leading-relaxed mb-8">
@@ -240,7 +240,7 @@ export default function NoveLanding() {
       <footer className="py-16 bg-black text-[#FAFAFA]">
         <div className="max-w-6xl mx-auto px-6 lg:px-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
-            <div className="text-2xl font-light tracking-wide">Nove</div>
+            <div className="text-2xl font-thin tracking-wide">Nove</div>
             <div className="flex gap-8 text-xs uppercase tracking-[0.15em]">
               <a href="#" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">Browse</a>
               <a href="#" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">for Brides</a>
