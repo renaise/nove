@@ -24,7 +24,7 @@ export default function NoveLanding() {
       }`}>
         <div className="flex justify-between items-center px-6 py-4 lg:px-10">
           {/* Logo */}
-          <a href="#" className={`text-xl font-thin tracking-wide transition-colors duration-300 ${
+          <a href="#" className={`text-xl font-normal tracking-wide transition-colors duration-300 ${
             scrolled ? 'text-black' : 'text-[#FAFAFA]'
           }`}>Nove</a>
 
@@ -93,8 +93,8 @@ export default function NoveLanding() {
 
         {/* Content at Bottom */}
         <div className="relative z-10 text-center px-6 max-w-2xl mx-auto mb-16 md:mb-24">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#FAFAFA]/60 mb-2 font-thin">Nove</p>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-thin leading-snug mb-4 tracking-normal text-[#FAFAFA]">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[#FAFAFA]/60 mb-2 font-normal">Nove</p>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-normal leading-snug mb-4 tracking-[-0.02em] text-[#FAFAFA]">
             See the moment before it happens.
           </h1>
           <div className="flex flex-row gap-4 justify-center items-center">
@@ -113,8 +113,8 @@ export default function NoveLanding() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           {/* Header */}
           <div className="text-center mb-12">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-black/50 mb-3 font-thin">Browse</p>
-            <h2 className="text-3xl md:text-4xl font-thin tracking-tight mb-4 text-black">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-black/50 mb-3 font-normal">Browse</p>
+            <h2 className="text-3xl md:text-4xl font-normal tracking-[-0.02em] mb-4 text-black">
               Find Your Dream Dress
             </h2>
             <p className="text-black/50 max-w-xl mx-auto">
@@ -208,7 +208,7 @@ export default function NoveLanding() {
       <section className="py-24 bg-black">
         <div className="max-w-3xl mx-auto px-6 lg:px-12 text-center">
           <p className="text-xs uppercase tracking-[0.3em] text-[#FAFAFA]/50 mb-4">for Boutiques</p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-thin tracking-tight mb-6 text-[#FAFAFA]">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal tracking-[-0.02em] mb-6 text-[#FAFAFA]">
             Empower Your Brides
           </h2>
           <p className="text-lg text-[#FAFAFA]/50 leading-relaxed mb-10">
@@ -224,7 +224,7 @@ export default function NoveLanding() {
       <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6 lg:px-12 text-center">
           <p className="text-xs uppercase tracking-[0.3em] text-black/50 mb-4">About</p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-thin tracking-tight mb-6 text-black">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal tracking-[-0.02em] mb-6 text-black">
             Privacy First, Always
           </h2>
           <p className="text-lg text-black/50 leading-relaxed mb-8">
@@ -240,7 +240,7 @@ export default function NoveLanding() {
       <footer className="py-16 bg-black text-[#FAFAFA]">
         <div className="max-w-6xl mx-auto px-6 lg:px-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
-            <div className="text-2xl font-thin tracking-wide">Nove</div>
+            <div className="text-2xl font-normal tracking-wide">Nove</div>
             <div className="flex gap-8 text-xs uppercase tracking-[0.15em]">
               <a href="#" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">Browse</a>
               <a href="#" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">for Brides</a>
