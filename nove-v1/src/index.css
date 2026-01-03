@@ -1,20 +1,13 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&display=swap');
 @source "../index.html";
 @source "./**/*.{js,ts,jsx,tsx}";
-
-/* Times Now Light Font */
-@font-face {
-  font-family: 'Times Now';
-  src: url('/fonts/times-now-light.otf') format('opentype');
-  font-weight: 300;
-  font-style: normal;
-}
 
 /* Base Styles */
 body {
   background: #F5F5F5;
   margin: 0;
-  font-family: 'Times Now', 'Times New Roman', Times, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 300;
 }
 

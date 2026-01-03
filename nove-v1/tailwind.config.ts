@@ -8,7 +8,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['"Times Now"', '"Times New Roman"', 'Times', 'serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
       },
     },
   },
