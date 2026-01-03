@@ -93,10 +93,12 @@ export default function NoveLanding() {
 
         {/* Content at Bottom */}
         <div className="relative z-10 text-center px-6 max-w-2xl mx-auto mb-16 md:mb-24">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#FAFAFA]/60 mb-2 font-normal">Nove</p>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-normal leading-snug mb-4 tracking-[-0.02em] text-[#FAFAFA]">
-            See the moment before it happens.
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-normal leading-tight mb-6 tracking-[-0.02em] text-[#FAFAFA]">
+            Confidence in every choice.
           </h1>
+          <p className="text-sm md:text-base text-[#FAFAFA]/70 leading-relaxed mb-8 max-w-lg mx-auto">
+            Your wedding dress is a tradition, not a guess. We built Nove as a simple tool to help you see exactly how different styles look on you—before you ever step foot in a store. It is a private way to explore your options and find the silhouette that feels right.
+          </p>
           <div className="flex flex-row gap-4 justify-center items-center">
             <button className="px-4 py-1.5 border border-[#FAFAFA] bg-transparent text-[#FAFAFA] text-[10px] uppercase tracking-[0.12em] hover:bg-[#FAFAFA] hover:text-black transition-all">
               Start Trying on
