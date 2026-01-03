@@ -1,0 +1,33 @@
+@import "tailwindcss";
+@source "../index.html";
+@source "./**/*.{js,ts,jsx,tsx}";
+
+/* Times Now Light Font */
+@font-face {
+  font-family: 'Times Now';
+  src: url('/fonts/times-now-light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Base Styles */
+body {
+  background: #F5F5F5;
+  margin: 0;
+  font-family: 'Times Now', 'Times New Roman', Times, serif;
+  font-weight: 300;
+}
+
+/* Hide Scrollbar for Chrome/Safari/Opera */
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide Scrollbar for IE, Edge and Firefox */
+.custom-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+h1, h2, h3, h4 {
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
