@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Camera, Sparkles, User, Menu, X, Upload } from 'lucide-react';
+import heroVideo from './assets/hero_video.mp4';
 
 const NoveLanding = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -43,10 +44,20 @@ const NoveLanding = () => {
 
       {/* Hero Section - Minimal */}
       <header className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Subtle checkered pattern background */}
-        <div className="absolute inset-0 opacity-30" style={{
-          backgroundImage: `repeating-conic-gradient(#D4D4D4 0% 25%, transparent 0% 50%) 50% / 60px 60px`,
-        }}></div>
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src={heroVideo} type="video/mp4" />
+          </video>
+          {/* Overlay to ensure text readability */}
+          <div className="absolute inset-0 bg-white/30 backdrop-blur-[1px]"></div>
+        </div>
 
         <div className="container mx-auto px-6 relative z-10 text-center mt-12">
           <p className="text-sm uppercase tracking-widest text-[#8E8E93] mb-4">Nove</p>

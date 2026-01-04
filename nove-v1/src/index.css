@@ -1,14 +1,19 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@300&display=swap');
 @source "../index.html";
 @source "./**/*.{js,ts,jsx,tsx}";
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
 
 /* Base Styles */
 body {
   background: #F5F5F5;
   margin: 0;
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 400;
+  font-family: 'Cormorant', Georgia, serif;
+  font-weight: 300;
   letter-spacing: -0.02em;
 }
 
@@ -28,4 +33,18 @@ h1, h2, h3, h4, h5, h6, p {
 
 h1, h2, h3, h4 {
   font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }
