@@ -72,11 +72,11 @@ export default function NoveLanding() {
 
           {/* Desktop Nav - Centered */}
           <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
-            <a href="#browse" className={`text-[10px] uppercase tracking-[0.12em] px-2 transition-colors duration-300 ${
-              scrolled ? 'text-black/60 hover:text-black' : 'text-[#FAFAFA]/70 hover:text-[#FAFAFA]'
-            }`}>Browse</a>
-            <span className={`text-[8px] transition-colors duration-300 ${scrolled ? 'text-black/30' : 'text-[#FAFAFA]/30'}`}>·</span>
             <a href="#about" className={`text-[10px] uppercase tracking-[0.12em] px-2 transition-colors duration-300 ${
+              scrolled ? 'text-black/60 hover:text-black' : 'text-[#FAFAFA]/70 hover:text-[#FAFAFA]'
+            }`}>About</a>
+            <span className={`text-[8px] transition-colors duration-300 ${scrolled ? 'text-black/30' : 'text-[#FAFAFA]/30'}`}>·</span>
+            <a href="#for-brides" className={`text-[10px] uppercase tracking-[0.12em] px-2 transition-colors duration-300 ${
               scrolled ? 'text-black/60 hover:text-black' : 'text-[#FAFAFA]/70 hover:text-[#FAFAFA]'
             }`}>For Brides</a>
             <span className={`text-[8px] transition-colors duration-300 ${scrolled ? 'text-black/30' : 'text-[#FAFAFA]/30'}`}>·</span>
@@ -84,9 +84,9 @@ export default function NoveLanding() {
               scrolled ? 'text-black/60 hover:text-black' : 'text-[#FAFAFA]/70 hover:text-[#FAFAFA]'
             }`}>For Boutiques</a>
             <span className={`text-[8px] transition-colors duration-300 ${scrolled ? 'text-black/30' : 'text-[#FAFAFA]/30'}`}>·</span>
-            <a href="#about" className={`text-[10px] uppercase tracking-[0.12em] px-2 transition-colors duration-300 ${
+            <a href="#browse" className={`text-[10px] uppercase tracking-[0.12em] px-2 transition-colors duration-300 ${
               scrolled ? 'text-black/60 hover:text-black' : 'text-[#FAFAFA]/70 hover:text-[#FAFAFA]'
-            }`}>About</a>
+            }`}>Browse</a>
           </div>
 
           {/* CTA Button */}
@@ -109,11 +109,11 @@ export default function NoveLanding() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden absolute top-full left-0 w-full bg-white/90 backdrop-blur-xl p-6 flex flex-col gap-4">
-            <a href="#browse" onClick={() => setMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.15em] text-black">Browse</a>
-            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.15em] text-black">For Brides</a>
-            <a href="#boutiques" onClick={() => setMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.15em] text-black">For Boutiques</a>
             <a href="#about" onClick={() => setMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.15em] text-black">About</a>
-            <a href="#browse" onClick={() => setMobileMenuOpen(false)} className="mt-4 w-full py-3 border border-black text-black text-xs uppercase tracking-[0.15em] text-center">
+            <a href="#for-brides" onClick={() => setMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.15em] text-black">For Brides</a>
+            <a href="#boutiques" onClick={() => setMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.15em] text-black">For Boutiques</a>
+            <a href="#browse" onClick={() => setMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.15em] text-black">Browse</a>
+            <a href="#for-brides" onClick={() => setMobileMenuOpen(false)} className="mt-4 w-full py-3 border border-black text-black text-xs uppercase tracking-[0.15em] text-center">
               Start Trying on
             </a>
           </div>
@@ -122,13 +122,17 @@ export default function NoveLanding() {
 
       {/* --- HERO SECTION --- */}
       <section className="relative min-h-screen flex flex-col justify-end">
-        {/* Full Viewport Background Image */}
+        {/* Full Viewport Background Video */}
         <div className="absolute inset-0">
-          <img
-            src="/hero-bride.jpg"
-            alt="Bride in wedding dress"
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
             className="w-full h-full object-cover"
-          />
+          >
+            <source src="/hero_video.mp4" type="video/mp4" />
+          </video>
           {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-black/40" />
         </div>
@@ -211,6 +215,97 @@ export default function NoveLanding() {
                   <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-sm rounded px-3 py-2">
                     <p className="text-[10px] uppercase tracking-wider text-black/60">Virtual Try-On</p>
                     <p className="text-xs text-black">Danielle Frankel · Eloise</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- FOR BRIDES SECTION --- */}
+      <section id="for-brides" className="py-24 bg-[#F5F5F5] scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            {/* Left - Steps */}
+            <div className="space-y-10">
+              <p className="text-xs uppercase tracking-[0.3em] text-black/50">For Brides</p>
+
+              {/* Step 01 */}
+              <div className="border-t border-black/10 pt-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <span className="text-xs text-black/40 mr-4">01</span>
+                    <span className="text-lg text-black">The Silhouette Analysis</span>
+                  </div>
+                  <span className="text-[10px] uppercase tracking-wider text-black/40">Capture</span>
+                </div>
+                <p className="text-sm text-black/50 mb-4 pl-8">Upload a photo of yourself. Our AI analyzes your body shape to determine which silhouettes will flatter you most.</p>
+                <button className="ml-8 px-6 py-2 border border-black text-black text-[10px] uppercase tracking-wider hover:bg-black hover:text-white transition-all">
+                  Begin Analysis
+                </button>
+              </div>
+
+              {/* Step 02 */}
+              <div className="border-t border-black/10 pt-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <span className="text-xs text-black/40 mr-4">02</span>
+                    <span className="text-lg text-black">Silhouette Result</span>
+                  </div>
+                  <span className="text-[10px] uppercase tracking-wider text-black/40">Analyze</span>
+                </div>
+                <div className="grid grid-cols-4 gap-2 pl-8">
+                  {['A-line', 'Ball Gown', 'Mermaid', 'Sheath'].map((style) => (
+                    <div key={style} className="py-3 border border-black/20 text-center text-[10px] uppercase tracking-wider text-black/50">
+                      {style}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Step 03 */}
+              <div className="border-t border-black/10 pt-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <span className="text-xs text-black/40 mr-4">03</span>
+                    <span className="text-lg text-black">Refine the Aesthetic</span>
+                  </div>
+                  <span className="text-[10px] uppercase tracking-wider text-black/40">Style</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 pl-8">
+                  {['Minimalist', 'Romantic', 'Avant-Garde', 'Classic'].map((aesthetic) => (
+                    <div key={aesthetic} className="py-3 border border-black/20 text-center text-[10px] uppercase tracking-wider text-black/50">
+                      {aesthetic}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Step 04 */}
+              <div className="border-t border-black/10 pt-6">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <span className="text-xs text-black/40 mr-4">04</span>
+                    <span className="text-lg text-black">Curated Selection</span>
+                  </div>
+                  <span className="text-[10px] uppercase tracking-wider text-black/40">Result</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right - Image Upload Preview */}
+            <div className="relative">
+              <div className="aspect-[3/4] bg-black/10 rounded-lg overflow-hidden relative">
+                <img
+                  src="/hero-bride.jpg"
+                  alt="Bride preview"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="bg-white/90 backdrop-blur-sm rounded-lg px-6 py-4 text-center">
+                    <p className="text-sm text-black mb-1">Upload Image</p>
+                    <p className="text-xs text-black/50">Drag and Drop or Click to Browse</p>
                   </div>
                 </div>
               </div>
@@ -374,10 +469,10 @@ export default function NoveLanding() {
               <path d="M46.986 9.216H39.33C39.33 12.888 40.89 14.904 43.122 14.904C44.874 14.904 46.05 13.848 46.65 11.76L46.914 11.904C46.698 13.128 46.218 14.136 45.474 14.976C44.73 15.816 43.794 16.224 42.69 16.224C41.346 16.224 40.242 15.696 39.378 14.664C38.538 13.632 38.106 12.288 38.106 10.656C38.106 7.08 40.002 4.824 42.906 4.824C44.13 4.824 45.114 5.232 45.858 6.048C46.602 6.864 46.986 7.92 46.986 9.216ZM39.354 8.616H45.162C45.186 6.672 44.058 5.448 42.402 5.448C41.658 5.448 40.962 5.76 40.362 6.36C39.762 6.96 39.426 7.704 39.354 8.616Z" fill="white"/>
             </svg>
             <div className="flex gap-8 text-xs uppercase tracking-[0.15em]">
-              <a href="#browse" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">Browse</a>
-              <a href="#about" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">For Brides</a>
-              <a href="#boutiques" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">For Boutiques</a>
               <a href="#about" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">About</a>
+              <a href="#for-brides" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">For Brides</a>
+              <a href="#boutiques" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">For Boutiques</a>
+              <a href="#browse" className="text-[#FAFAFA]/70 hover:text-[#FAFAFA] transition-colors">Browse</a>
             </div>
           </div>
           <div className="border-t border-[#FAFAFA]/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#FAFAFA]/50">
