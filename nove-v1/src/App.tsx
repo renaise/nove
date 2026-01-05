@@ -32,6 +32,11 @@ export default function NoveLanding() {
   const [selectedSilhouette, setSelectedSilhouette] = useState('All');
   const [selectedPriceIndex, setSelectedPriceIndex] = useState(0);
 
+  // For Brides interactive state
+  const [bridesStep, setBridesStep] = useState(1);
+  const [selectedBridesSilhouette, setSelectedBridesSilhouette] = useState<string | null>(null);
+  const [selectedAesthetic, setSelectedAesthetic] = useState<string | null>(null);
+
   // Filter dresses based on selected filters
   const filteredDresses = useMemo(() => {
     return dressData.filter(dress => {
@@ -228,69 +233,138 @@ export default function NoveLanding() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
             {/* Left - Steps */}
-            <div className="space-y-10">
+            <div className="space-y-8">
               <p className="text-xs uppercase tracking-[0.3em] text-black/50">For Brides</p>
 
               {/* Step 01 */}
-              <div className="border-t border-black/10 pt-6">
+              <div
+                className={`border-t pt-6 cursor-pointer transition-all ${bridesStep >= 1 ? 'border-black/30' : 'border-black/10'}`}
+                onClick={() => setBridesStep(1)}
+              >
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span className="text-xs text-black/40 mr-4">01</span>
-                    <span className="text-lg text-black">The Silhouette Analysis</span>
+                    <span className={`text-xs mr-4 ${bridesStep >= 1 ? 'text-black' : 'text-black/40'}`}>01</span>
+                    <span className={`text-lg ${bridesStep === 1 ? 'text-black' : 'text-black/50'}`}>The Silhouette Analysis</span>
                   </div>
-                  <span className="text-[10px] uppercase tracking-wider text-black/40">Capture</span>
+                  <span className={`text-[10px] uppercase tracking-wider ${bridesStep >= 1 ? 'text-black/60' : 'text-black/40'}`}>Capture</span>
                 </div>
-                <p className="text-sm text-black/50 mb-4 pl-8">Upload a photo of yourself. Our AI analyzes your body shape to determine which silhouettes will flatter you most.</p>
-                <button className="ml-8 px-6 py-2 border border-black text-black text-[10px] uppercase tracking-wider hover:bg-black hover:text-white transition-all">
-                  Begin Analysis
-                </button>
+                {bridesStep === 1 && (
+                  <>
+                    <p className="text-sm text-black/50 mb-4 pl-8">Upload a photo of yourself. Our AI analyzes your body shape to determine which silhouettes will flatter you most.</p>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setBridesStep(2); }}
+                      className="ml-8 px-6 py-2 border border-black text-black text-[10px] uppercase tracking-wider hover:bg-black hover:text-white transition-all"
+                    >
+                      Begin Analysis
+                    </button>
+                  </>
+                )}
               </div>
 
               {/* Step 02 */}
-              <div className="border-t border-black/10 pt-6">
+              <div
+                className={`border-t pt-6 transition-all ${bridesStep >= 2 ? 'border-black/30 cursor-pointer' : 'border-black/10 opacity-50'}`}
+                onClick={() => bridesStep >= 2 && setBridesStep(2)}
+              >
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span className="text-xs text-black/40 mr-4">02</span>
-                    <span className="text-lg text-black">Silhouette Result</span>
+                    <span className={`text-xs mr-4 ${bridesStep >= 2 ? 'text-black' : 'text-black/40'}`}>02</span>
+                    <span className={`text-lg ${bridesStep === 2 ? 'text-black' : 'text-black/50'}`}>Silhouette Result</span>
                   </div>
-                  <span className="text-[10px] uppercase tracking-wider text-black/40">Analyze</span>
+                  <span className={`text-[10px] uppercase tracking-wider ${bridesStep >= 2 ? 'text-black/60' : 'text-black/40'}`}>Analyze</span>
                 </div>
-                <div className="grid grid-cols-4 gap-2 pl-8">
-                  {['A-line', 'Ball Gown', 'Mermaid', 'Sheath'].map((style) => (
-                    <div key={style} className="py-3 border border-black/20 text-center text-[10px] uppercase tracking-wider text-black/50">
-                      {style}
-                    </div>
-                  ))}
-                </div>
+                {bridesStep === 2 && (
+                  <div className="grid grid-cols-4 gap-2 pl-8">
+                    {['A-line', 'Ball Gown', 'Mermaid', 'Sheath'].map((style) => (
+                      <button
+                        key={style}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedBridesSilhouette(style);
+                          setTimeout(() => setBridesStep(3), 300);
+                        }}
+                        className={`py-3 border text-center text-[10px] uppercase tracking-wider transition-all ${
+                          selectedBridesSilhouette === style
+                            ? 'border-black bg-black text-white'
+                            : 'border-black/20 text-black/50 hover:border-black hover:text-black'
+                        }`}
+                      >
+                        {style}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {bridesStep > 2 && selectedBridesSilhouette && (
+                  <p className="text-sm text-black/50 pl-8">Selected: <span className="text-black">{selectedBridesSilhouette}</span></p>
+                )}
               </div>
 
               {/* Step 03 */}
-              <div className="border-t border-black/10 pt-6">
+              <div
+                className={`border-t pt-6 transition-all ${bridesStep >= 3 ? 'border-black/30 cursor-pointer' : 'border-black/10 opacity-50'}`}
+                onClick={() => bridesStep >= 3 && setBridesStep(3)}
+              >
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span className="text-xs text-black/40 mr-4">03</span>
-                    <span className="text-lg text-black">Refine the Aesthetic</span>
+                    <span className={`text-xs mr-4 ${bridesStep >= 3 ? 'text-black' : 'text-black/40'}`}>03</span>
+                    <span className={`text-lg ${bridesStep === 3 ? 'text-black' : 'text-black/50'}`}>Refine the Aesthetic</span>
                   </div>
-                  <span className="text-[10px] uppercase tracking-wider text-black/40">Style</span>
+                  <span className={`text-[10px] uppercase tracking-wider ${bridesStep >= 3 ? 'text-black/60' : 'text-black/40'}`}>Style</span>
                 </div>
-                <div className="grid grid-cols-2 gap-2 pl-8">
-                  {['Minimalist', 'Romantic', 'Avant-Garde', 'Classic'].map((aesthetic) => (
-                    <div key={aesthetic} className="py-3 border border-black/20 text-center text-[10px] uppercase tracking-wider text-black/50">
-                      {aesthetic}
-                    </div>
-                  ))}
-                </div>
+                {bridesStep === 3 && (
+                  <div className="grid grid-cols-2 gap-2 pl-8">
+                    {['Minimalist', 'Romantic', 'Avant-Garde', 'Classic'].map((aesthetic) => (
+                      <button
+                        key={aesthetic}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedAesthetic(aesthetic);
+                          setTimeout(() => setBridesStep(4), 300);
+                        }}
+                        className={`py-3 border text-center text-[10px] uppercase tracking-wider transition-all ${
+                          selectedAesthetic === aesthetic
+                            ? 'border-black bg-black text-white'
+                            : 'border-black/20 text-black/50 hover:border-black hover:text-black'
+                        }`}
+                      >
+                        {aesthetic}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {bridesStep > 3 && selectedAesthetic && (
+                  <p className="text-sm text-black/50 pl-8">Selected: <span className="text-black">{selectedAesthetic}</span></p>
+                )}
               </div>
 
               {/* Step 04 */}
-              <div className="border-t border-black/10 pt-6">
-                <div className="flex justify-between items-start">
+              <div
+                className={`border-t pt-6 transition-all ${bridesStep >= 4 ? 'border-black/30' : 'border-black/10 opacity-50'}`}
+              >
+                <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span className="text-xs text-black/40 mr-4">04</span>
-                    <span className="text-lg text-black">Curated Selection</span>
+                    <span className={`text-xs mr-4 ${bridesStep >= 4 ? 'text-black' : 'text-black/40'}`}>04</span>
+                    <span className={`text-lg ${bridesStep === 4 ? 'text-black' : 'text-black/50'}`}>Curated Selection</span>
                   </div>
-                  <span className="text-[10px] uppercase tracking-wider text-black/40">Result</span>
+                  <span className={`text-[10px] uppercase tracking-wider ${bridesStep >= 4 ? 'text-black/60' : 'text-black/40'}`}>Result</span>
                 </div>
+                {bridesStep === 4 && (
+                  <div className="pl-8">
+                    <p className="text-sm text-black/50 mb-4">Based on your {selectedBridesSilhouette} silhouette and {selectedAesthetic} style preference, we've curated the perfect selection for you.</p>
+                    <a
+                      href="#browse"
+                      className="inline-block px-6 py-2 bg-black text-white text-[10px] uppercase tracking-wider hover:bg-black/80 transition-all"
+                    >
+                      View Your Matches
+                    </a>
+                    <button
+                      onClick={() => { setBridesStep(1); setSelectedBridesSilhouette(null); setSelectedAesthetic(null); }}
+                      className="ml-4 px-6 py-2 border border-black/20 text-black/50 text-[10px] uppercase tracking-wider hover:border-black hover:text-black transition-all"
+                    >
+                      Start Over
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -300,14 +374,36 @@ export default function NoveLanding() {
                 <img
                   src="/hero-bride.jpg"
                   alt="Bride preview"
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-opacity duration-500 ${bridesStep >= 2 ? 'opacity-100' : 'opacity-50'}`}
                 />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="bg-white/90 backdrop-blur-sm rounded-lg px-6 py-4 text-center">
-                    <p className="text-sm text-black mb-1">Upload Image</p>
-                    <p className="text-xs text-black/50">Drag and Drop or Click to Browse</p>
+                {bridesStep === 1 && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div
+                      className="bg-white/90 backdrop-blur-sm rounded-lg px-6 py-4 text-center cursor-pointer hover:bg-white transition-all"
+                      onClick={() => setBridesStep(2)}
+                    >
+                      <p className="text-sm text-black mb-1">Upload Image</p>
+                      <p className="text-xs text-black/50">Drag and Drop or Click to Browse</p>
+                    </div>
                   </div>
-                </div>
+                )}
+                {bridesStep === 4 && (
+                  <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-3">
+                    <p className="text-[10px] uppercase tracking-wider text-black/60 mb-1">Your Perfect Match</p>
+                    <p className="text-sm text-black">{selectedBridesSilhouette} · {selectedAesthetic}</p>
+                  </div>
+                )}
+              </div>
+              {/* Progress indicator */}
+              <div className="flex justify-center gap-2 mt-4">
+                {[1, 2, 3, 4].map((step) => (
+                  <div
+                    key={step}
+                    className={`h-1 rounded-full transition-all ${
+                      step <= bridesStep ? 'w-8 bg-black' : 'w-2 bg-black/20'
+                    }`}
+                  />
+                ))}
               </div>
             </div>
           </div>
