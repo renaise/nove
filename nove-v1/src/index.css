@@ -1,31 +1,45 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@300&display=swap');
 @source "../index.html";
 @source "./**/*.{js,ts,jsx,tsx}";
+
+/* TimesNow Light font - with Cormorant as fallback */
+@font-face {
+  font-family: 'TimesNow';
+  src: local('TimesNow-Light'), local('Times Now Light');
+  font-weight: 300;
+  font-style: normal;
+}
 
 /* Smooth Scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Base Styles - COS-inspired clean sans-serif */
+/* Base Styles - TimesNow Light with forced light weight */
 body {
   background: #FFFFFF;
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.01em;
+  font-family: 'TimesNow', 'Cormorant', 'Times New Roman', Georgia, serif;
+  font-weight: 300 !important;
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Force light weight on all text elements */
+* {
+  font-weight: 300 !important;
+}
+
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 300;
-  letter-spacing: -0.01em;
+  font-weight: 300 !important;
+  letter-spacing: -0.02em;
 }
 
 p {
-  letter-spacing: 0.01em;
+  font-weight: 300 !important;
+  letter-spacing: -0.01em;
 }
 
 /* Hide Scrollbar for Chrome/Safari/Opera */
