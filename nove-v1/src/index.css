@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
 @source "../index.html";
 @source "./**/*.{js,ts,jsx,tsx}";
 
@@ -8,17 +8,24 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Base Styles */
+/* Base Styles - COS-inspired clean sans-serif */
 body {
-  background: #F5F5F5;
+  background: #FFFFFF;
   margin: 0;
-  font-family: 'Cormorant', Georgia, serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   font-weight: 300;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6, p {
-  letter-spacing: -0.02em;
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+p {
+  letter-spacing: 0.01em;
 }
 
 /* Hide Scrollbar for Chrome/Safari/Opera */

@@ -8,7 +8,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['"Cormorant"', 'Georgia', 'serif'],
+        sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', '"Helvetica Neue"', 'sans-serif'],
       },
     },
   },
